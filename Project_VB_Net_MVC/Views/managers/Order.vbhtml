@@ -1,0 +1,125 @@
+﻿@Code
+    ViewData("Title") = "Order"
+    Layout = "~/Views/Shared/_Layout.vbhtml"
+End Code
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 16px;
+        }
+
+            .sidebar a {
+                padding: 6px 8px 6px 16px;
+                text-decoration: none;
+                font-size: 20px;
+                color: #818181;
+                display: block;
+                margin: 5px 0;
+            }
+
+                .sidebar a:hover {
+                    color: #f1f1f1;
+                }
+
+        .main {
+            margin-left: 200px;
+            padding: 0px 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="http://localhost:53005/Manager/HomePage"><i class="fa fa-fw fa-home"></i> Home</a>
+        <a href="http://localhost:53005/Manager/OrderPage"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Order</a>
+        <a href="http://localhost:53005/Manager/ListUser"><i class="fa fa-fw fa-user"></i> Users</a>
+        <a href="http://localhost:53005/Manager/ProductPage"><i class="fa fa-picture-o" aria-hidden="true"></i> Product</a>
+        <a href="http://localhost:53005/Users/Logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+    </div>
+
+    <div class="main">
+        <section class="intro">
+            <div class="bg-image h-100" style="background-color: #6095F0;">
+                <div class="mask d-flex align-items-center h-100">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">
+                                                            STATUS
+                                                        </th>
+                                                        <th scope="col">ORDER DATE</th>
+                                                        <th scope="col">TOTAL PRICE</th>
+                                                        <th scope="col">QUANTITY</th>
+                                                        <th scope="col">DETAILS</th>
+                                                        <th scope="col">CANCEL ORDER</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @For Each detail In Model
+                                                        @<tr>
+                                                            <th scope="row">
+                                                                <div class="form-check">
+                                                                    @If detail.status = True Then
+                                                                        @<input Class="form-check-input" type="checkbox" disabled value="" id="flexCheckDefault1" checked />
+                                                                    Else
+                                                                        @<input Class="form-check-input" type="checkbox" disabled value="" id="flexCheckDefault1" />
+                                                                    End IF
+
+                                                                </div>
+                                                            </th>
+                                                            <td>@detail.register_time</td>
+                                                            <td>@detail.total_price</td>
+                                                            <td>@detail.quantity</td>
+                                                            <td>
+                                                                @Html.ActionLink("GO TO", "OrderDetailPage", New With {.id = detail.id})
+                                                            </td>
+                                                            <td>
+                                                                @If detail.status = False Then
+                                                                    @Using (Html.BeginForm("CancelOrder", "users"))
+                                                                        @Html.AntiForgeryToken()
+                                                                        @Html.TextBox("orderId", detail.id, htmlAttributes:=New With {.class = "form-control mr-sm-2", .style = "display: none;"})
+                                                                        @<input type="submit" value="×" class="btn-danger" />
+                                                                    End Using
+                                                                End If
+                                                            </td>
+                                                        </tr>
+                                                    Next
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+
