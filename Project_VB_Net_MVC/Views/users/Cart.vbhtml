@@ -86,15 +86,31 @@ End Code
                 @Using (Html.BeginForm("Checkout", "users"))
                     @<Label Class="text-muted font-weight-normal">Address</Label>
                     @Html.TextBox("address", "", htmlAttributes:=New With {.class = "form-control"})
+                    @Code
+                        Dim address = TempData("address")
+                    End Code
+                    @If address IsNot Nothing Then
+                        @<p style="color:red; margin: 10px 0 0 0">
+                            @address
+                        </p>
+                    End If
                     @<Label Class="text-muted font-weight-normal">Phone</Label>
                     @Html.TextBox("phone", "", htmlAttributes:=New With {.class = "form-control", .style = "margin-bottom:10px;"})
+                    @Code
+                        Dim phone = TempData("phone")
+                    End Code
+                    @If phone IsNot Nothing Then
+                        @<p style="color:red; margin: 10px 0 0 0">
+                            @phone
+                        </p>
+                    End If
                     @Html.AntiForgeryToken()
                     @Html.TextBox("cartId", cart.id, htmlAttributes:=New With {.class = "", .style = "display: none;"})
                     @<input type="submit" value="Checkout" class="btn btn-lg btn-primary mt-2" />
                 End Using
 
                 <div class="float-right" style="margin-top:10px">
-                    @Html.ActionLink("Back to shopping", "Product", "Users", htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
+                    @Html.ActionLink("Back to shopping", "Product", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
                 </div>
 
 

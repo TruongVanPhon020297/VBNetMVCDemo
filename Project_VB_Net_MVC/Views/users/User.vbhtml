@@ -18,8 +18,16 @@ End Code
                         <img Class="img-account-profile rounded-circle mb-2" src="@ViewBag.ImagePath" width="200" height="200" alt="">
                         <div Class="input-group">
                             @Using Html.BeginForm("Upload", "users", FormMethod.Post, New With {.enctype = "multipart/form-data"})
-                                @<input type="file" name="file" Class="form-control"/>
-                                @<input type="submit" value="Upload"  Class="btn btn-outline-secondary"/>
+                                @<input type="submit" value="Upload" Class="btn btn-outline-secondary" />
+                                @<input type="file" name="file" Class="form-control" />
+                                @Code
+                                    Dim imageUpload = TempData("imageUpload")
+                                End Code
+                                @If imageUpload IsNot Nothing Then
+                                    @<p style="color:red; margin: 10px 0 0 0">
+                                        @imageUpload
+                                    </p>
+                                End If
                             End Using
                         </div>
                     </div>
@@ -42,6 +50,14 @@ End Code
                                 <div Class="col-md-6">
                                     <Label Class="small mb-1" for="inputLastName">Address</Label>
                                     <input Class="form-control" id="inputLastName" type="text" name=address value="@userInfo.address">
+                                    @Code
+                                        Dim addressUpdate = TempData("addressUpdate")
+                                    End Code
+                                    @If addressUpdate IsNot Nothing Then
+                                        @<p style="color:red; margin: 10px 0 0 0">
+                                            @addressUpdate
+                                        </p>
+                                    End If
                                     <Button Class="btn btn-primary" type="submit" style="margin-top:20px">Save changes</Button>
                                 </div>
                             </div>
@@ -49,15 +65,28 @@ End Code
                                 <div Class="col-md-6">
                                     <Label Class="small mb-1" for="inputOrgName">Phone Number</Label>
                                     <input Class="form-control" id="inputOrgName" name="phone" type="tel" value="@userInfo.phone">
+                                    @Code
+                                        Dim phoneUpdate = TempData("phoneUpdate")
+                                    End Code
+                                    @If phoneUpdate IsNot Nothing Then
+                                        @<p style="color:red; margin: 10px 0 0 0">
+                                            @phoneUpdate
+                                        </p>
+                                    End If
                                 </div>
                             </div>
                             @<div Class="row gx-3 mb-3">
-                                <div Class="col-md-6">
-                                    <Label Class="small mb-1" for="inputBirthday">Birthday</Label>
-                                    <input Class="form-control" id="inputBirthday" type="date" name="birthday" value="@userInfo.birth_day">
-                                </div>
+                                 <div Class="col-md-6">
+                                     <Label Class="small mb-1" for="inputBirthday">Birthday</Label>
+                                     @If userInfo.birth_day IsNot Nothing Then
+                                         @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="@userInfo.birth_day.Value.ToShortDateString()">
+                                     Else
+                                         @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="2024-03-05">
+                                     End If
+
+                                 </div>
                             </div>
-                        End Using
+                                        End Using
                     </div>
                 </div>
             </div>

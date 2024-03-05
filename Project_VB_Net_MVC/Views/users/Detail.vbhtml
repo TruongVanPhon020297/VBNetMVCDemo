@@ -1,4 +1,4 @@
-﻿@ModelType Tuple(Of List(Of RateData), product, rate)
+﻿@ModelType Tuple(Of List(Of RateData), product, rate, RateInfo)
 @Code
     ViewData("Title") = "Detail"
     Layout = "~/Views/Shared/_Layout.vbhtml"
@@ -120,6 +120,9 @@ End Code
     Dim rates As List(Of RateData) = Model.Item1
     Dim rate As rate = Model.Item3
     Dim product As product = Model.Item2
+    Dim rateTotal As RateInfo = Model.Item4
+    Dim rateRatio As Integer = Math.Floor(rateTotal.ratioRate)
+
     @<section class="py-5">
 
         <div Class="float-right" style="margin-top:10px;margin-bottom:10px">
@@ -152,7 +155,7 @@ End Code
                                 <div Class="col-md-4 col-6 mb-3">
                                     <Label Class="mb-2 d-block">Quantity</Label>
                                     <div Class="input-group mb-3" style="width: 170px;">
-                                        <input type="text" Class="form-control text-center border border-secondary" name="quantity" value="1" aria-label="Example text with button addon" aria-describedby="button-addon1" />
+                                        <input type="number" Class="form-control text-center border border-secondary" name="quantity" value="1" aria-label="Example text with button addon" aria-describedby="button-addon1" />
                                     </div>
                                 </div>
                             </div>
@@ -173,22 +176,18 @@ End Code
             <div class="col-sm-3">
                 <div class="rating-block">
                     <h4>Average user rating</h4>
-                    <h2 class="bold padding-bottom-7">4.3 <small>/ 5</small></h2>
-                    <button type="button" class="btn btn-warning btn-sm" aria-label="Left Align">
-                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                    </button>
-                    <button type="button" class="btn btn-warning btn-sm" aria-label="Left Align">
-                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                    </button>
-                    <button type="button" class="btn btn-warning btn-sm" aria-label="Left Align">
-                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                    </button>
-                    <button type="button" class="btn btn-default btn-grey btn-sm" aria-label="Left Align">
-                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                    </button>
-                    <button type="button" class="btn btn-default btn-grey btn-sm" aria-label="Left Align">
-                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                    </button>
+                    <h2 class="bold padding-bottom-7">@rateTotal.ratioRate<small>/ 5</small></h2>
+                    @For i = 1 To 5
+                        If i <= rateRatio Then
+                            @<Button type="button" Class="btn btn-warning btn-xs" aria-label="Left Align">
+                                <span Class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                            </Button>
+                        Else
+                            @<Button type="button" Class="btn btn-default btn-grey btn-xs" aria-label="Left Align">
+                                <span Class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                            </Button>
+                        End If
+                    Next
                 </div>
             </div>
             <div class="col-sm-3">
@@ -204,7 +203,7 @@ End Code
                             </div>
                         </div>
                     </div>
-                    <div class="pull-right" style="margin-left:10px;">1</div>
+                    <div class="pull-right" style="margin-left:10px;">@rateTotal.fiveRate</div>
                 </div>
                 <div class="pull-left">
                     <div class="pull-left" style="width:35px; line-height:1;">
@@ -217,7 +216,7 @@ End Code
                             </div>
                         </div>
                     </div>
-                    <div class="pull-right" style="margin-left:10px;">1</div>
+                    <div class="pull-right" style="margin-left:10px;">@rateTotal.fourRate</div>
                 </div>
                 <div class="pull-left">
                     <div class="pull-left" style="width:35px; line-height:1;">
@@ -230,7 +229,7 @@ End Code
                             </div>
                         </div>
                     </div>
-                    <div class="pull-right" style="margin-left:10px;">0</div>
+                    <div class="pull-right" style="margin-left:10px;">@rateTotal.threeRate</div>
                 </div>
                 <div class="pull-left">
                     <div class="pull-left" style="width:35px; line-height:1;">
@@ -243,7 +242,7 @@ End Code
                             </div>
                         </div>
                     </div>
-                    <div class="pull-right" style="margin-left:10px;">0</div>
+                    <div class="pull-right" style="margin-left:10px;">@rateTotal.twoRate</div>
                 </div>
                 <div class="pull-left">
                     <div class="pull-left" style="width:35px; line-height:1;">
@@ -256,7 +255,7 @@ End Code
                             </div>
                         </div>
                     </div>
-                    <div class="pull-right" style="margin-left:10px;">0</div>
+                    <div class="pull-right" style="margin-left:10px;">@rateTotal.oneRate</div>
                 </div>
             </div>
         </div>
@@ -270,7 +269,7 @@ End Code
                             <div Class="col-sm-3">
                                 <img width="100" height="100" src="@Url.Content("~/Uploads/" & item.user.image)" Class="img-rounded">
                                 <div Class="review-block-name">@item.user.fullName</div>
-                                <div Class="review-block-date">@item.rate.register_time</div>
+                                <div Class="review-block-date">@item.rate.register_time.ToShortDateString()</div>
                             </div>
                             <div Class="col-sm-9">
                                 <div Class="review-block-rate">

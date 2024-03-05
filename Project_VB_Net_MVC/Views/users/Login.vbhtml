@@ -18,27 +18,50 @@ End Code
                                 @Using (Html.BeginForm("Login", "users"))
                                     @Html.AntiForgeryToken()
                                     @<div class="form-horizontal">
-                                        @Html.ValidationSummary(True, "", New With {.class = "text-danger"})
-
                                         <div class="form-group">
                                             <label class="control-label col-md-2">
                                                 Email
                                             </label>
                                             <div class="col-md-10">
-                                                @Html.EditorFor(Function(model) model.email, New With {.htmlAttributes = New With {.class = "form-control"}})
-                                                @Html.ValidationMessageFor(Function(model) model.email, "", New With {.class = "text-danger"})
+                                                <input type="text" name="email" class="form-control" />
+                                                @Code
+                                                    Dim email = TempData("emailError")
+                                                End Code
+                                                @If email IsNot Nothing Then
+                                                    @<p style="color:red; margin: 10px 0 0 0">
+                                                        @email
+                                                    </p>
+                                                End If
                                             </div>
                                         </div>
-
                                         <div class="form-group">
                                             <label class="control-label col-md-2">
                                                 Password
                                             </label>
                                             <div class="col-md-10">
-                                                @Html.EditorFor(Function(model) model.password, New With {.htmlAttributes = New With {.class = "form-control"}})
-                                                @Html.ValidationMessageFor(Function(model) model.password, "", New With {.class = "text-danger"})
+                                                <input type="password" name="password" class="form-control" />
+                                                @Code
+                                                    Dim password = TempData("passwordError")
+                                                End Code
+                                                @If password IsNot Nothing Then
+                                                    @<p style="color:red; margin: 10px 0 0 0">
+                                                        @password
+                                                    </p>
+                                                End If
                                             </div>
                                         </div>
+                                        @Code
+                                            Dim login = TempData("login")
+                                        End Code
+                                        @If login IsNot Nothing Then
+                                            @<div Class="form-group">
+                                                <div class="col-md-10">
+                                                    <p style="color:red; margin: 10px 0 0 0">
+                                                        @login
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        End If
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-10">
                                                 <input type="submit" value="Login" class="btn btn-primary btn-primary" />
@@ -48,10 +71,8 @@ End Code
                                 End Using
                             </div>
                             <div Class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
                                 <img src="https://img.freepik.com/free-vector/login-concept-illustration_114360-739.jpg" style="width:300px;height:300px"
                                      Class="img-fluid mw-100 mh-100" alt="Sample image">
-
                             </div>
                         </div>
                     </div>
@@ -60,6 +81,6 @@ End Code
         </div>
     </div>
 </section>
-<p>
-    @Html.ActionLink("Register", "Register")
-</p>
+<div style="margin-top: 10px">
+    @Html.ActionLink("REGISTER", "Register", "users", Nothing, New With {.class = "btn btn-info"})
+</div>

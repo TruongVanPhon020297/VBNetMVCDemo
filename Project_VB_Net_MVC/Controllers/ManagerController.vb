@@ -8,16 +8,25 @@ Namespace Controllers
 
         ' GET: Manager
         Function HomePage() As ActionResult
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
             Return View("~/Views/managers/Home.vbhtml")
         End Function
 
         Function ProductPage() As ActionResult
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
             Dim products As List(Of product) = New List(Of product)
             products = db.products.ToList()
             Return View("~/Views/managers/Product.vbhtml", products)
         End Function
 
         Function Edit(ByVal id As Integer?) As ActionResult
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
             Dim product As product = Nothing
             product = db.products.Find(id)
 
@@ -83,6 +92,9 @@ Namespace Controllers
         End Function
 
         Function CreateProduct() As ActionResult
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
             Return View("~/Views/managers/CreateProduct.vbhtml")
         End Function
 
@@ -91,26 +103,44 @@ Namespace Controllers
         Function CreateProduct(file As HttpPostedFileBase, productName As String, price As Decimal, description As String) As ActionResult
 
             If file IsNot Nothing AndAlso file.ContentLength > 0 Then
+
+                If productName.Length = 0 Then
+                    TempData("productNameCreate") = "Product name is not blank"
+                    Return RedirectToAction("CreateProduct")
+                End If
+
+                If description.Length = 0 Then
+                    TempData("descriptionCreate") = "Description is not blank"
+                    Return RedirectToAction("CreateProduct")
+                End If
+
                 Dim fileName As String = System.IO.Path.GetFileName(file.FileName)
                 Dim path As String = Server.MapPath("~/Uploads/" & fileName)
                 file.SaveAs(path)
 
-                Dim product As product = New product()
-                product.product_name = productName
-                product.image = fileName
-                product.price = price
-                product.is_deleted = False
-                product.description = description
+                Dim product As product = New product With {
+                    .product_name = productName,
+                    .image = fileName,
+                    .price = price,
+                    .is_deleted = False,
+                    .description = description
+                }
 
                 db.products.Add(product)
                 db.SaveChanges()
-
+                Return RedirectToAction("ProductPage")
+            Else
+                TempData("fileCreate") = "File is not blank"
+                Return RedirectToAction("CreateProduct")
             End If
 
-            Return RedirectToAction("ProductPage")
         End Function
 
         Function ListUser() As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
 
             Dim userDataList As List(Of UserData) = New List(Of UserData)
             Dim users As List(Of user) = New List(Of user)
@@ -164,12 +194,18 @@ Namespace Controllers
         End Function
 
         Function OrderPage() As ActionResult
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
             Dim orders As List(Of order) = New List(Of order)
             orders = db.orders.OrderBy(Function(item) item.status).ThenBy(Function(item) item.register_time).ToList()
             Return View("~/Views/managers/Order.vbhtml", orders)
         End Function
 
         Function OrderDetailPage(id As Integer) As ActionResult
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
 
             Dim orderInfo As order = New order()
             orderInfo = db.orders.Find(id)
@@ -210,5 +246,87 @@ Namespace Controllers
             Return RedirectToAction("OrderPage")
 
         End Function
+
+        Function CreateUser() As ActionResult
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+            Return View("~/Views/managers/CreateUser.vbhtml")
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function CreateUserData(file As HttpPostedFileBase, fullName As String, email As String, password As String, manager As Integer) As ActionResult
+
+            If file IsNot Nothing AndAlso file.ContentLength > 0 Then
+
+                If fullName.Length = 0 Then
+                    TempData("fullNameCreate") = "Full name is not blank"
+                    Return RedirectToAction("CreateUser")
+                End If
+
+                If email.Length = 0 Then
+                    TempData("emailCreate") = "Email is not blank"
+                    Return RedirectToAction("CreateUser")
+                End If
+
+                If password.Length = 0 Then
+                    TempData("passwordCreate") = "Password is not blank"
+                    Return RedirectToAction("CreateUser")
+                End If
+
+
+                Dim userCheck As user = New user()
+                userCheck = (From u In db.users
+                             Where u.email = email
+                             Select u).FirstOrDefault()
+
+                If userCheck Is Nothing Then
+
+                    Dim fileName As String = System.IO.Path.GetFileName(file.FileName)
+                    Dim path As String = Server.MapPath("~/Uploads/" & fileName)
+                    file.SaveAs(path)
+
+                    Dim isManager As Boolean = True
+
+                    If (manager = 0) Then
+                        isManager = False
+                    End If
+
+                    Dim user As user = New user With {
+                       .full_name = fullName,
+                       .email = email,
+                       .manager = isManager,
+                       .password = password
+                    }
+
+                    db.users.Add(user)
+                    db.SaveChanges()
+
+                    Dim userResult As user = New user()
+                    userResult = (From u In db.users
+                                  Where u.email = email
+                                  Select u).FirstOrDefault()
+
+                    Dim userInfo As user_info = New user_info With {
+                        .user_id = userResult.id,
+                        .image = fileName
+                    }
+
+                    db.user_info.Add(userInfo)
+                    db.SaveChanges()
+
+                    Return RedirectToAction("ListUser")
+
+                Else
+                    TempData("emailCreate") = "Email Exists"
+                    Return RedirectToAction("CreateUser")
+                End If
+            Else
+                TempData("fileCreateUser") = "File is not blank"
+                Return RedirectToAction("CreateUser")
+            End If
+        End Function
+
     End Class
 End Namespace

@@ -15,28 +15,61 @@ Namespace Controllers
 
         Private db As New DBNetEntities
 
-        ' GET: users
+
+        ' Register Data 
         Function Register() As ActionResult
             Return View()
         End Function
 
-        ' GET: users/Details/5
-        Function Details(ByVal id As Integer?) As ActionResult
-            If IsNothing(id) Then
-                Return New HttpStatusCodeResult(HttpStatusCode.BadRequest)
+        <HttpPost()>
+        <ActionName("Register")>
+        <ValidateAntiForgeryToken()>
+        Function Create(<Bind(Include:="id,full_name,password,email")> ByVal user As user) As ActionResult
+            If ModelState.IsValid Then
+
+                If user.full_name Is Nothing Then
+                    TempData("fullName") = "Full name is not blank"
+                    Return RedirectToAction("Register")
+                End If
+
+                If user.password Is Nothing Then
+                    TempData("password") = "Password is not blank"
+                    Return RedirectToAction("Register")
+                End If
+
+                Dim userCheck As user = New user()
+                userCheck = (From u In db.users
+                             Where u.email = user.email
+                             Select u).FirstOrDefault()
+
+                If userCheck Is Nothing Then
+                    user.manager = False
+                    db.users.Add(user)
+                    db.SaveChanges()
+
+                    Dim userResult As user = New user()
+                    userResult = (From u In db.users
+                                  Where u.email = user.email
+                                  Select u).FirstOrDefault()
+
+                    Dim userInfo As user_info = New user_info With {
+                        .user_id = userResult.id,
+                        .image = "avartar.png"
+                    }
+                    db.user_info.Add(userInfo)
+                    db.SaveChanges()
+                    Return RedirectToAction("Login")
+                Else
+                    TempData("email") = "Email Exists"
+                    Return RedirectToAction("Register")
+                End If
             End If
-            Dim user As user = db.users.Find(id)
-            If IsNothing(user) Then
-                Return HttpNotFound()
-            End If
-            Return View(user)
+            Return RedirectToAction("Register")
         End Function
 
-        ' GET: users/Create
-        Function Create() As ActionResult
-            Return View()
-        End Function
 
+
+        ' Login
         <ActionName("Login")>
         Function LoginPage() As ActionResult
             If Request.Cookies("UserName") Is Nothing And Request.Cookies("Manager") Is Nothing Then
@@ -46,126 +79,199 @@ Namespace Controllers
             Else
                 Return RedirectToAction("HomePage", "Manager")
             End If
-
-        End Function
-
-        ' POST: users/Create
-        'To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        'more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        <HttpPost()>
-        <ActionName("Register")>
-        <ValidateAntiForgeryToken()>
-        Function Create(<Bind(Include:="id,full_name,password,email")> ByVal user As user) As ActionResult
-            If ModelState.IsValid Then
-                db.users.Add(user)
-                db.SaveChanges()
-                Return RedirectToAction("Login")
-            End If
-            Return RedirectToAction("Register")
-        End Function
-
-        Function Product() As ActionResult
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
-            Return View(db.products.ToList())
         End Function
 
         <HttpPost()>
-        <ActionName("Login")>
         <ValidateAntiForgeryToken()>
-        Function Login(<Bind(Include:="id,full_name,password,email")> ByVal userInfo As user) As ActionResult
+        Function Login(email As String, password As String) As ActionResult
+
+            If email.Length = 0 Then
+                TempData("emailError") = "Email is Not Blank"
+                Return RedirectToAction("Login")
+            End If
+
+            If password.Length = 0 Then
+                TempData("passwordError") = "Password is Not Blank"
+                Return RedirectToAction("Login")
+            End If
+
             Dim viewModel As user = Nothing
-            If ModelState.IsValid Then
-                viewModel = (From u In db.users Where u.email.Equals(userInfo.email) And u.password.Equals(userInfo.password)).FirstOrDefault()
-                If viewModel IsNot Nothing Then
-
-                    If viewModel.manager Then
-                        Dim aCookie As New HttpCookie("Manager")
-                        aCookie.Value = viewModel.id
-                        aCookie.Expires = DateTime.Now.AddDays(30)
-                        Response.Cookies.Add(aCookie)
-                        Return RedirectToAction("HomePage", "Manager")
-                    Else
-                        Dim aCookie As New HttpCookie("UserName")
-                        aCookie.Value = viewModel.id
-                        aCookie.Expires = DateTime.Now.AddDays(30)
-                        Response.Cookies.Add(aCookie)
-                        Return RedirectToAction("Product")
-                    End If
+            viewModel = (From u In db.users Where u.email.Equals(email) And u.password.Equals(password)).FirstOrDefault()
+            If viewModel IsNot Nothing Then
+                If viewModel.manager Then
+                    Dim aCookie As New HttpCookie("Manager") With {
+                        .Value = viewModel.id,
+                        .Expires = DateTime.Now.AddDays(30)
+                    }
+                    Response.Cookies.Add(aCookie)
+                    Return RedirectToAction("HomePage", "Manager")
+                Else
+                    Dim aCookie As New HttpCookie("UserName") With {
+                        .Value = viewModel.id,
+                        .Expires = DateTime.Now.AddDays(30)
+                    }
+                    Response.Cookies.Add(aCookie)
+                    Return RedirectToAction("Product")
                 End If
+            Else
+                TempData("login") = "Login invalid"
+                Return RedirectToAction("Login")
             End If
             Return RedirectToAction("Login")
         End Function
 
-        ' GET: users/Edit/5
-        Function Edit(ByVal id As Integer?) As ActionResult
-            If IsNothing(id) Then
-                Return New HttpStatusCodeResult(HttpStatusCode.BadRequest)
+
+        ' User 
+
+        Function UserInfo() As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
             End If
-            Dim user As user = db.users.Find(id)
-            If IsNothing(user) Then
-                Return HttpNotFound()
+
+            Dim userCookie = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userCookie.Value)
+
+            Dim user As user = db.users.Find(userId)
+
+            Dim userInfoData As user_info = New user_info()
+            userInfoData = (From u In db.user_info
+                            Where u.user_id = user.id).FirstOrDefault()
+
+            Dim orderDetails As List(Of order_detail) = Nothing
+
+            Dim tupleData As New Tuple(Of List(Of order_detail), user, user_info)(orderDetails, user, userInfoData)
+
+            ViewBag.ImagePath = "http://bootdey.com/img/Content/avatar/avatar1.png"
+
+            If userInfoData.image IsNot Nothing Then
+                Dim imageUrl As String = Url.Content("~/Uploads/" & userInfoData.image)
+                ViewBag.ImagePath = imageUrl
             End If
-            Return View(user)
+
+            Return View("User", tupleData)
+
         End Function
 
-        ' POST: users/Edit/5
-        'To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        'more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         <HttpPost()>
         <ValidateAntiForgeryToken()>
-        Function Edit(<Bind(Include:="id,full_name,password,email")> ByVal user As user) As ActionResult
-            If ModelState.IsValid Then
-                db.Entry(user).State = EntityState.Modified
-                db.SaveChanges()
-                Return RedirectToAction("Index")
-            End If
-            Return View(user)
-        End Function
+        Function UpdateInfoUser(address As String, phone As String, birthday As Date) As ActionResult
 
-        ' GET: users/Delete/5
-        Function Delete(ByVal id As Integer?) As ActionResult
-            If IsNothing(id) Then
-                Return New HttpStatusCodeResult(HttpStatusCode.BadRequest)
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
             End If
-            Dim user As user = db.users.Find(id)
-            If IsNothing(user) Then
-                Return HttpNotFound()
-            End If
-            Return View(user)
-        End Function
+            Dim userCookie = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userCookie.Value)
 
-        ' POST: users/Delete/5
-        <HttpPost()>
-        <ActionName("Delete")>
-        <ValidateAntiForgeryToken()>
-        Function DeleteConfirmed(ByVal id As Integer) As ActionResult
-            Dim user As user = db.users.Find(id)
-            db.users.Remove(user)
+            If phone.Length = 0 Then
+                TempData("phoneUpdate") = "Phone is not blank"
+                Return RedirectToAction("UserInfo")
+            End If
+
+            If address.Length = 0 Then
+                TempData("addressUpdate") = "Address is not blank"
+                Return RedirectToAction("UserInfo")
+            End If
+
+            If birthday.ToShortDateString().Length = 0 Then
+                TempData("birthdayUpdate") = "Birthday is not blank"
+                Return RedirectToAction("UserInfo")
+            End If
+
+
+            Dim user As user = db.users.Find(userId)
+
+            Dim userInfoData As user_info = New user_info()
+            userInfoData = (From u In db.user_info
+                            Where u.user_id = user.id).FirstOrDefault()
+
+            userInfoData.address = address
+            userInfoData.phone = phone
+            userInfoData.birth_day = birthday
+
+            db.Entry(userInfoData).State = EntityState.Modified
             db.SaveChanges()
-            Return RedirectToAction("Index")
+
+            Return RedirectToAction("UserInfo")
+
         End Function
 
-        Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-            If (disposing) Then
-                db.Dispose()
+        <HttpPost>
+        Function Upload(file As HttpPostedFileBase) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
             End If
-            MyBase.Dispose(disposing)
-        End Sub
+            Dim userCookie = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userCookie.Value)
+
+            If file IsNot Nothing AndAlso file.ContentLength > 0 Then
+                Dim fileName As String = System.IO.Path.GetFileName(file.FileName)
+                Dim path As String = Server.MapPath("~/Uploads/" & fileName)
+                file.SaveAs(path)
+
+                Dim userInfo As user_info = Nothing
+                userInfo = (From u In db.user_info
+                            Where u.user_id = userId).FirstOrDefault()
+
+                userInfo.image = fileName
+
+                db.Entry(userInfo).State = EntityState.Modified
+                db.SaveChanges()
+            Else
+                TempData("imageUpload") = "Image invalid"
+                Return RedirectToAction("UserInfo")
+            End If
+            Return RedirectToAction("UserInfo")
+        End Function
+
+        ' Cart
 
         <HttpPost()>
         <ValidateAntiForgeryToken()>
-        Function Product(name As String) As ActionResult
-            Dim viewModel As List(Of product) = Nothing
+        Function RemoveDetail(detailId As String) As ActionResult
 
-            If String.IsNullOrEmpty(name) Then
-                viewModel = db.products.ToList()
-            Else
-                viewModel = (From p In db.products Where p.product_name.Contains(name)).ToList()
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim cart As cart = Nothing
+
+            cart = (From c In db.carts
+                    Where c.user_id = userId
+                    Select c).FirstOrDefault()
+
+            If cart IsNot Nothing Then
+
+                Dim cartDetail As cart_detail = Nothing
+
+                cartDetail = (From d In db.cart_detail
+                              Where d.id = detailId
+                              Select d).FirstOrDefault()
+
+                Dim cartDetails As List(Of cart_detail) = New List(Of cart_detail)
+                cartDetails = (From c In db.cart_detail
+                               Where c.cart_id = cart.id).ToList()
+
+                If cartDetail IsNot Nothing Then
+                    db.cart_detail.Remove(cartDetail)
+                    db.SaveChanges()
+
+                End If
+
+                If cart.quantity = 1 Or cartDetails.Count = 1 Then
+                    db.carts.Remove(cart)
+                    db.SaveChanges()
+                    Return RedirectToAction("CartInfo")
+                End If
+
+                cart.quantity = cart.quantity - cartDetail.quantity
+                cart.total_price = cart.total_price - cartDetail.total_price
+
+                db.Entry(cart).State = EntityState.Modified
+                db.SaveChanges()
+
             End If
-
-            Return View("Product", viewModel)
+            Return RedirectToAction("CartInfo")
         End Function
 
         <HttpPost()>
@@ -241,88 +347,6 @@ Namespace Controllers
                     db.Entry(cartDetail).State = EntityState.Modified
                     db.SaveChanges()
                 End If
-            End If
-            Return RedirectToAction("CartInfo")
-        End Function
-
-
-        Function Logout() As ActionResult
-            If (Not Request.Cookies("UserName") Is Nothing) Then
-                Dim myCookie As HttpCookie
-                myCookie = New HttpCookie("UserName")
-                myCookie.Expires = DateTime.Now.AddDays(-1D)
-                Response.Cookies.Add(myCookie)
-            Else
-                Dim myCookie As HttpCookie
-                myCookie = New HttpCookie("Manager")
-                myCookie.Expires = DateTime.Now.AddDays(-1D)
-                Response.Cookies.Add(myCookie)
-            End If
-
-            Return RedirectToAction("Login")
-        End Function
-
-        Function CartInfo() As ActionResult
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
-
-            Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
-
-            Dim cartDetails As List(Of cart_detail) = Nothing
-            Dim cart As cart = Nothing
-
-            cart = (From c In db.carts
-                    Where c.user_id = userId
-                    Select c).FirstOrDefault()
-
-            Try
-                cartDetails = (From c In db.cart_detail
-                               Where c.cart_id = cart.id
-                               Select c).ToList()
-            Catch ex As Exception
-                Return View("Cart")
-            End Try
-
-            Dim tupleData As New Tuple(Of List(Of cart_detail), cart)(cartDetails, cart)
-
-            Return View("Cart", tupleData)
-        End Function
-
-
-        <HttpPost()>
-        <ValidateAntiForgeryToken()>
-        Function RemoveDetail(detailId As String) As ActionResult
-
-            Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
-
-            Dim cart As cart = Nothing
-
-            cart = (From c In db.carts
-                    Where c.user_id = userId
-                    Select c).FirstOrDefault()
-
-            If cart IsNot Nothing Then
-
-                Dim cartDetail As cart_detail = Nothing
-
-                cartDetail = (From d In db.cart_detail
-                              Where d.id = detailId
-                              Select d).FirstOrDefault()
-
-                cart.quantity = cart.quantity - cartDetail.quantity
-                cart.total_price = cart.total_price - cartDetail.total_price
-
-                db.Entry(cart).State = EntityState.Modified
-                db.SaveChanges()
-
-                If cartDetail IsNot Nothing Then
-                    db.cart_detail.Remove(cartDetail)
-                    db.SaveChanges()
-                End If
-
             End If
             Return RedirectToAction("CartInfo")
         End Function
@@ -410,6 +434,34 @@ Namespace Controllers
 
         End Function
 
+        Function CartInfo() As ActionResult
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim cartDetails As List(Of cart_detail) = Nothing
+            Dim cart As cart = Nothing
+
+            cart = (From c In db.carts
+                    Where c.user_id = userId
+                    Select c).FirstOrDefault()
+
+            Try
+                cartDetails = (From c In db.cart_detail
+                               Where c.cart_id = cart.id
+                               Select c).ToList()
+            Catch ex As Exception
+                Return View("Cart")
+            End Try
+
+            Dim tupleData As New Tuple(Of List(Of cart_detail), cart)(cartDetails, cart)
+
+            Return View("Cart", tupleData)
+        End Function
+
         <HttpPost()>
         <ValidateAntiForgeryToken()>
         Function Checkout(cartId As String, address As String, phone As String) As ActionResult
@@ -417,15 +469,26 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
+            If address.Length = 0 Then
+                TempData("address") = "Address is not blank"
+                Return RedirectToAction("CartInfo")
+            End If
+
+            If phone.Length = 0 Then
+                TempData("phone") = "Phone is not blank"
+                Return RedirectToAction("CartInfo")
+            End If
+
             Dim cart As cart = Nothing
 
             cart = (From c In db.carts
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
-            Dim delivery As delivery = New delivery()
-            delivery.location = address
-            delivery.phone = phone
+            Dim delivery As delivery = New delivery With {
+                .location = address,
+                .phone = phone
+            }
 
             db.deliveries.Add(delivery)
             db.SaveChanges()
@@ -501,199 +564,6 @@ Namespace Controllers
 
             Return orderDetails
 
-        End Function
-
-        Function OrderInfo() As ActionResult
-
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
-
-            Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
-
-            Dim orders As List(Of order) = Nothing
-
-            orders = (From o In db.orders
-                      Where o.user_id = userId
-                      Select o).ToList()
-            Return View("Order", orders)
-        End Function
-
-
-        Function OrderDetail(ByVal id As Integer?) As ActionResult
-
-            Dim orderDetails As List(Of order_detail) = Nothing
-            orderDetails = (From o In db.order_detail Where o.order_id = id).ToList()
-
-            Dim order As order = Nothing
-            order = (From o In db.orders Where o.id = id).FirstOrDefault()
-
-            Dim delivery As delivery = Nothing
-            delivery = (From d In db.deliveries Where d.Id = order.delivery_id).FirstOrDefault()
-
-
-            Dim tupleData As New Tuple(Of List(Of order_detail), delivery, order)(orderDetails, delivery, order)
-
-            Return View("OrderDetail", tupleData)
-        End Function
-
-        <HttpPost()>
-        <ValidateAntiForgeryToken()>
-        Function CancelOrder(orderId As String) As ActionResult
-
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
-            Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
-
-            Dim order As order = db.orders.Find(Decimal.Parse(orderId))
-            db.orders.Remove(order)
-            db.SaveChanges()
-
-            Dim orderDetails As List(Of order_detail) = Nothing
-            orderDetails = (From o In db.order_detail
-                            Where o.order_id = order.id).ToList()
-
-            db.order_detail.RemoveRange(orderDetails)
-            db.SaveChanges()
-
-            Dim delivery As delivery = Nothing
-            delivery = db.deliveries.Find(order.delivery_id)
-            db.deliveries.Remove(delivery)
-            db.SaveChanges()
-
-            Return RedirectToAction("OrderInfo")
-        End Function
-
-        Function UserInfo() As ActionResult
-
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
-            Dim userCookie = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userCookie.Value)
-
-            Dim user As user = db.users.Find(userId)
-
-            Dim userInfoData As user_info = New user_info()
-            userInfoData = (From u In db.user_info
-                            Where u.user_id = user.id).FirstOrDefault()
-
-            Dim orderDetails As List(Of order_detail) = Nothing
-
-            Dim tupleData As New Tuple(Of List(Of order_detail), user, user_info)(orderDetails, user, userInfoData)
-
-            ViewBag.ImagePath = "http://bootdey.com/img/Content/avatar/avatar1.png"
-
-            If userInfoData.image IsNot Nothing Then
-                Dim imageUrl As String = Url.Content("~/Uploads/" & userInfoData.image)
-                ViewBag.ImagePath = imageUrl
-            End If
-
-            Return View("User", tupleData)
-
-        End Function
-
-        <HttpPost()>
-        <ValidateAntiForgeryToken()>
-        Function UpdateInfoUser(address As String, phone As String, birthday As Date) As ActionResult
-
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
-            Dim userCookie = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userCookie.Value)
-
-            Dim user As user = db.users.Find(userId)
-
-            Dim userInfoData As user_info = New user_info()
-            userInfoData = (From u In db.user_info
-                            Where u.user_id = user.id).FirstOrDefault()
-
-            userInfoData.address = address
-            userInfoData.phone = phone
-            userInfoData.birth_day = birthday
-
-            db.Entry(userInfoData).State = EntityState.Modified
-            db.SaveChanges()
-
-            Return RedirectToAction("UserInfo")
-
-        End Function
-
-        <HttpPost>
-        Function Upload(file As HttpPostedFileBase) As ActionResult
-
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
-            Dim userCookie = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userCookie.Value)
-
-            If file IsNot Nothing AndAlso file.ContentLength > 0 Then
-                Dim fileName As String = System.IO.Path.GetFileName(file.FileName)
-                Dim path As String = Server.MapPath("~/Uploads/" & fileName)
-                file.SaveAs(path)
-
-                Dim userInfo As user_info = Nothing
-                userInfo = (From u In db.user_info
-                            Where u.user_id = userId).FirstOrDefault()
-
-                userInfo.image = fileName
-
-                db.Entry(userInfo).State = EntityState.Modified
-                db.SaveChanges()
-
-            End If
-            Return RedirectToAction("UserInfo")
-        End Function
-
-        Function Detail(ByVal id As Integer?) As ActionResult
-            Dim product As product = Nothing
-
-            Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
-
-            Dim rating As rate = New rate()
-            Dim rates As List(Of rate) = New List(Of rate)
-            rating = (From r In db.rates
-                      Where r.user_id = userId And r.product_id = id
-                      Select r).FirstOrDefault()
-
-            rates = (From r In db.rates
-                     Where r.user_id <> userId And r.product_id = id
-                     Select r).ToList()
-
-            Dim rateListData As List(Of RateData) = New List(Of RateData)
-
-            For Each item In rates
-
-                Dim userData As UserData = New UserData()
-                Dim user As user = New user()
-
-                user = db.users.Find(item.user_id)
-                Dim userInfoData As user_info = New user_info()
-                userInfoData = (From u In db.user_info
-                                Where u.user_id = item.user_id
-                                Select u).FirstOrDefault()
-                If userInfoData.image IsNot Nothing Then
-                    userData.image = userInfoData.image
-                End If
-
-                userData.fullName = user.full_name
-
-                Dim rateData As RateData = New RateData()
-                rateData.rate = item
-                rateData.user = userData
-
-                rateListData.Add(rateData)
-
-            Next
-            product = db.products.Find(id)
-            Dim tupleData As New Tuple(Of List(Of RateData), product, rate)(rateListData, product, rating)
-            Return View("Detail", tupleData)
         End Function
 
         <HttpPost()>
@@ -772,6 +642,244 @@ Namespace Controllers
             End If
             Return RedirectToAction("CartInfo")
         End Function
+
+        ' Product
+
+        Function Product() As ActionResult
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+            Return View(db.products.ToList())
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function Product(name As String) As ActionResult
+            Dim viewModel As List(Of product) = Nothing
+
+            If String.IsNullOrEmpty(name) Then
+                viewModel = db.products.ToList()
+            Else
+                viewModel = (From p In db.products Where p.product_name.Contains(name)).ToList()
+            End If
+
+            Return View("Product", viewModel)
+        End Function
+
+        Function Detail(ByVal id As Integer?) As ActionResult
+            Dim product As product = Nothing
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim rating As rate = New rate()
+            Dim rates As List(Of rate) = New List(Of rate)
+            rating = (From r In db.rates
+                      Where r.user_id = userId And r.product_id = id
+                      Select r).FirstOrDefault()
+
+            rates = (From r In db.rates
+                     Where r.user_id <> userId And r.product_id = id
+                     Select r).ToList()
+
+            Dim rateListData As List(Of RateData) = New List(Of RateData)
+
+            For Each item In rates
+
+                Dim userData As UserData = New UserData()
+                Dim user As user = New user()
+
+                user = db.users.Find(item.user_id)
+                Dim userInfoData As user_info = New user_info()
+                userInfoData = (From u In db.user_info
+                                Where u.user_id = item.user_id
+                                Select u).FirstOrDefault()
+                If userInfoData.image IsNot Nothing Then
+                    userData.image = userInfoData.image
+                End If
+
+                userData.fullName = user.full_name
+
+                Dim rateData As RateData = New RateData()
+                rateData.rate = item
+                rateData.user = userData
+
+                rateListData.Add(rateData)
+
+            Next
+            product = db.products.Find(id)
+
+            Dim rateTotal As RateInfo = New RateInfo()
+
+            Dim totalRate As List(Of rate) = New List(Of rate)
+            totalRate = (From r In db.rates
+                         Where r.product_id = id And r.star = 1
+                         Select r).ToList()
+
+            rateTotal.oneRate = totalRate.Count
+
+            totalRate = (From r In db.rates
+                         Where r.product_id = id And r.star = 2
+                         Select r).ToList()
+
+            rateTotal.twoRate = totalRate.Count
+
+            totalRate = (From r In db.rates
+                         Where r.product_id = id And r.star = 3
+                         Select r).ToList()
+
+            rateTotal.threeRate = totalRate.Count
+
+            totalRate = (From r In db.rates
+                         Where r.product_id = id And r.star = 4
+                         Select r).ToList()
+
+            rateTotal.fourRate = totalRate.Count
+
+            totalRate = (From r In db.rates
+                         Where r.product_id = id And r.star = 5
+                         Select r).ToList()
+
+            rateTotal.fiveRate = totalRate.Count
+
+            Dim total As Integer = rateTotal.oneRate + rateTotal.twoRate + rateTotal.threeRate + rateTotal.fourRate + rateTotal.fiveRate
+            rateTotal.ratioRate = (5 * rateTotal.fiveRate + 4 * rateTotal.fourRate + 3 * rateTotal.threeRate + 2 * rateTotal.twoRate + rateTotal.oneRate) / total
+
+            Dim tupleData As New Tuple(Of List(Of RateData), product, rate, RateInfo)(rateListData, product, rating, rateTotal)
+            Return View("Detail", tupleData)
+        End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+            If (disposing) Then
+                db.Dispose()
+            End If
+            MyBase.Dispose(disposing)
+        End Sub
+
+
+
+
+
+
+        Function Logout() As ActionResult
+            If (Not Request.Cookies("UserName") Is Nothing) Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName")
+                myCookie.Expires = DateTime.Now.AddDays(-1D)
+                Response.Cookies.Add(myCookie)
+            Else
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("Manager")
+                myCookie.Expires = DateTime.Now.AddDays(-1D)
+                Response.Cookies.Add(myCookie)
+            End If
+
+            Return RedirectToAction("Login")
+        End Function
+
+
+
+
+
+
+        Function OrderInfo() As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim orders As List(Of order) = Nothing
+
+            orders = (From o In db.orders
+                      Where o.user_id = userId
+                      Select o).ToList()
+            Return View("Order", orders)
+        End Function
+
+
+        Function OrderDetail(ByVal id As Integer?) As ActionResult
+
+            Dim orderDetails As List(Of order_detail) = Nothing
+            orderDetails = (From o In db.order_detail Where o.order_id = id).ToList()
+
+            Dim order As order = Nothing
+            order = (From o In db.orders Where o.id = id).FirstOrDefault()
+
+            Dim delivery As delivery = Nothing
+            delivery = (From d In db.deliveries Where d.Id = order.delivery_id).FirstOrDefault()
+
+
+            Dim tupleData As New Tuple(Of List(Of order_detail), delivery, order)(orderDetails, delivery, order)
+
+            Return View("OrderDetail", tupleData)
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function CancelOrder(orderId As String) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim order As order = db.orders.Find(Decimal.Parse(orderId))
+            db.orders.Remove(order)
+            db.SaveChanges()
+
+            Dim orderDetails As List(Of order_detail) = Nothing
+            orderDetails = (From o In db.order_detail
+                            Where o.order_id = order.id).ToList()
+
+            db.order_detail.RemoveRange(orderDetails)
+            db.SaveChanges()
+
+            Dim delivery As delivery = Nothing
+            delivery = db.deliveries.Find(order.delivery_id)
+            db.deliveries.Remove(delivery)
+            db.SaveChanges()
+
+            Return RedirectToAction("OrderInfo")
+        End Function
+
+
+
+
+
+
+
+
+
+
 
         <HttpPost()>
         <ValidateAntiForgeryToken()>

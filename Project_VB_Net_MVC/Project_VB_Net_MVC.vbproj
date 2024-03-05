@@ -206,6 +206,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\RateData.vb" />
+    <Compile Include="Models\RateInfo.vb" />
     <Compile Include="Models\UserData.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -298,6 +299,7 @@
     <Content Include="Views\managers\User.vbhtml" />
     <Content Include="Views\managers\Order.vbhtml" />
     <Content Include="Views\managers\OrderDetail.vbhtml" />
+    <Content Include="Views\managers\CreateUser.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

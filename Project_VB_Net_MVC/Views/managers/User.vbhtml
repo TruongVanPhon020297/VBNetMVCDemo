@@ -72,6 +72,7 @@ End Code
                             <div class="col-12 mb-3 mb-lg-5">
                                 <div class="overflow-hidden card table-nowrap table-card">
                                     <div class="table-responsive table-wrapper">
+                                        @Html.ActionLink("CREATE USER", "CreateUser", "Manager", Nothing, New With {.class = "btn btn-info"})
                                         <table class="table mb-0" style="margin-top:10px">
                                             <thead class="small text-uppercase bg-body text-muted">
                                                 <tr>

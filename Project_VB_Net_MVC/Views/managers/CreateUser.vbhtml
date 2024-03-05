@@ -1,73 +1,82 @@
 ﻿@Code
-    ViewData("Title") = "CreateProduct"
+    ViewData("Title") = "CreateUser"
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
 
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container bootstrap snippets bootdeys">
     <div class="row">
-        @Using Html.BeginForm("CreateProduct", "Manager", FormMethod.Post, New With {.enctype = "multipart/form-data"})
+        @Using Html.BeginForm("CreateUserData", "Manager", FormMethod.Post, New With {.enctype = "multipart/form-data"})
             @Html.AntiForgeryToken()
             @<div Class="col-xs-12 col-sm-9">
-                @Html.ActionLink("PRODUCT LIST", "ProductPage", "Manager", Nothing, New With {.class = "btn btn-info"})
+                @Html.ActionLink("USER LIST", "UserPage", "Manager", Nothing, New With {.class = "btn btn-info"})
                 <div Class="panel panel-default" style="margin:10px">
                     <div Class="input-group panel-body text-center">
                         <input type="file" name="file" Class="form-control" />
                         @Code
-                            Dim fileCreate = TempData("fileCreate")
+                            Dim fileCreateUser = TempData("fileCreateUser")
                         End Code
-                        @If fileCreate IsNot Nothing Then
+                        @If fileCreateUser IsNot Nothing Then
                             @<p style="color:red; margin: 10px 0 0 0">
-                                @fileCreate
+                                @fileCreateUser
                             </p>
                         End If
                     </div>
                 </div>
                 <div Class="panel panel-default">
                     <div Class="panel-heading">
-                        <h4 Class="panel-title">Product Info</h4>
+                        <h4 Class="panel-title">User Info</h4>
                     </div>
                     <div Class="panel-body">
                         <div Class="form-group">
-                            <Label Class="col-sm-2 control-label">Product Name</Label>
+                            <Label Class="col-sm-2 control-label">Full Name</Label>
                             <div Class="col-sm-10" style="margin-top:10px">
-                                <input type="text" name="productName" Class="form-control" value="">
+                                <input type="text" name="fullName" Class="form-control" value="">
                                 @Code
-                                    Dim productNameCreate = TempData("productNameCreate")
+                                    Dim fullNameCreate = TempData("fullNameCreate")
                                 End Code
-                                @If productNameCreate IsNot Nothing Then
+                                @If fullNameCreate IsNot Nothing Then
                                     @<p style="color:red; margin: 10px 0 0 0">
-                                        @productNameCreate
+                                        @fullNameCreate
                                     </p>
                                 End If
                             </div>
                         </div>
                         <div Class="form-group">
-                            <Label Class="col-sm-2 control-label">Price</Label>
+                            <Label Class="col-sm-2 control-label">Email</Label>
                             <div Class="col-sm-10" style="margin-top:10px">
-                                <input type="number" name="price" Class="form-control" value="0">
+                                <input type="email" name="email" Class="form-control" value="">
                                 @Code
-                                    Dim priceCreate = TempData("priceCreate")
+                                    Dim emailCreate = TempData("emailCreate")
                                 End Code
-                                @If priceCreate IsNot Nothing Then
+                                @If emailCreate IsNot Nothing Then
                                     @<p style="color:red; margin: 10px 0 0 0">
-                                        @productNameCreate
+                                        @emailCreate
                                     </p>
                                 End If
                             </div>
                         </div>
                         <div Class="form-group">
-                            <Label Class="col-sm-2 control-label">Description</Label>
+                            <Label Class="col-sm-2 control-label">Password</Label>
                             <div Class="col-sm-10" style="margin-top:10px">
-                                <textarea rows="3" Class="form-control" name="description"></textarea>
+                                <input type="password" name="password" Class="form-control" value="">
                                 @Code
-                                    Dim descriptionCreate = TempData("descriptionCreate")
+                                    Dim passwordCreate = TempData("passwordCreate")
                                 End Code
-                                @If descriptionCreate IsNot Nothing Then
+                                @If passwordCreate IsNot Nothing Then
                                     @<p style="color:red; margin: 10px 0 0 0">
-                                        @descriptionCreate
+                                        @passwordCreate
                                     </p>
                                 End If
+                            </div>
+                        </div>
+
+                        <div Class="form-group">
+                            <div Class="col-sm-10 col-sm-offset-2" style="margin-top:10px">
+                                <select class="form-control" name="manager" aria-label="Default select example">
+                                    <option value="0">User</option>
+                                    <option value="1">Manager</option>
+                                </select>
                             </div>
                         </div>
                         <div Class="form-group">
@@ -79,7 +88,6 @@ End Code
                 </div>
             </div>
         End Using
-
     </div>
 </div>
 

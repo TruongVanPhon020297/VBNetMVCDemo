@@ -32,7 +32,7 @@ End Code
                                 @<tr>
                                     <td class="p-4">
                                         <div class="media align-items-center">
-                                            <img src="@detail.image" width="200" height="200" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                                            <img src="@Url.Content("~/Uploads/" & detail.image)" width="200" height="200" class="d-block ui-w-40 ui-bordered mr-4" alt="">
                                             <div class="media-body">
                                                 <a href="#" class="d-block text-dark">@detail.product_name</a>
                                             </div>
@@ -70,12 +70,12 @@ End Code
                     @<div>@delivery.phone</div>
                     @If order.status = True Then
                         @<Label Class="text-muted font-weight-normal">Delivery Date</Label>
-                        @<div>@delivery.delivery_date</div>
+                        @<div>@delivery.delivery_date.Value.ToShortDateString()</div>
                     End If
                 End Using
 
                 <div Class="float-right" style="margin-top:10px">
-                    @Html.ActionLink("Back to order list", "OrderInfo", "Users", htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
+                    @Html.ActionLink("Back to order list", "OrderInfo", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
                 </div>
 
 
@@ -85,5 +85,5 @@ End Code
 
 Else
     @<p>No order information available.</p>
-    @Html.ActionLink("Back to shopping", "Product", "Users", htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
+    @Html.ActionLink("Back to shopping", "Product", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
 End If

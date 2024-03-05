@@ -11,7 +11,6 @@ End Code
                     <div class="card-body p-md-5">
                         <div class="row justify-content-center">
                             <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
                                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
                                 @Using (Html.BeginForm("Register", "users"))
                                     @Html.AntiForgeryToken()
@@ -23,44 +22,59 @@ End Code
                                             </label>
                                             <div class="col-md-10">
                                                 @Html.EditorFor(Function(model) model.full_name, New With {.htmlAttributes = New With {.class = "form-control"}})
-                                                @Html.ValidationMessageFor(Function(model) model.full_name, "", New With {.class = "text-danger"})
+                                                @Code
+                                                    Dim fullName = TempData("fullName")
+                                                End Code
+                                                @If fullName IsNot Nothing Then
+                                                    @<p style="color:red; margin: 10px 0 0 0">
+                                                        @fullName
+                                                    </p>
+                                                End If
                                             </div>
                                         </div>
-
                                         <div class="form-group">
                                             <label class="control-label col-md-2">
                                                 Password
                                             </label>
                                             <div class="col-md-10">
-                                                @Html.EditorFor(Function(model) model.password, New With {.htmlAttributes = New With {.class = "form-control"}})
-                                                @Html.ValidationMessageFor(Function(model) model.password, "", New With {.class = "text-danger"})
+                                                @Html.EditorFor(Function(model) model.password, New With {.htmlAttributes = New With {.class = "form-control", .type = "password"}})
+                                                @Code
+                                                    Dim password = TempData("password")
+                                                End Code
+                                                @If password IsNot Nothing Then
+                                                    @<p style="color:red; margin: 10px 0 0 0">
+                                                        @password
+                                                    </p>
+                                                End If
                                             </div>
                                         </div>
-
                                         <div class="form-group">
                                             <label class="control-label col-md-2">
                                                 Email
                                             </label>
                                             <div class="col-md-10">
                                                 @Html.EditorFor(Function(model) model.email, New With {.htmlAttributes = New With {.class = "form-control"}})
-                                                @Html.ValidationMessageFor(Function(model) model.email, "", New With {.class = "text-danger"})
+                                                @Code
+                                                    Dim email = TempData("email")
+                                                End Code
+                                                @If email IsNot Nothing Then
+                                                    @<p style="color:red; margin: 10px 0 0 0">
+                                                        @email
+                                                    </p>
+                                                End If
                                             </div>
                                         </div>
-
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-10">
-                                                <input type="submit" value="Create" class="btn btn-primary btn-primary" />
+                                                <input type="submit" value="CREATE" class="btn btn-primary btn-primary" />
                                             </div>
                                         </div>
                                     </div>
-                                End Using
-
+                                                    End Using
                             </div>
                             <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
                                 <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp" style="width:500px;height:auto"
                                      class="img-fluid mw-100 mh-100" alt="Sample image">
-
                             </div>
                         </div>
                     </div>
@@ -69,6 +83,6 @@ End Code
         </div>
     </div>
 </section>
-<p>
-    @Html.ActionLink("Login", "Login")
-</p>
+<div style="margin-top: 10px">
+    @Html.ActionLink("LOGIN", "Login", "users", Nothing, New With {.class = "btn btn-info"})
+</div>
