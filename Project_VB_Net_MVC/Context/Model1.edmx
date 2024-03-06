@@ -36,6 +36,15 @@
           <Property Name="phone" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="delivery_date" Type="date" />
         </EntityType>
+        <EntityType Name="favotite">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_id" Type="int" />
+          <Property Name="product_id" Type="int" />
+          <Property Name="status" Type="bit" />
+        </EntityType>
         <EntityType Name="order">
           <Key>
             <PropertyRef Name="id" />
@@ -71,6 +80,14 @@
           <Property Name="price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="description" Type="nvarchar" MaxLength="255" />
           <Property Name="is_deleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="purchased_product">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="product_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="rate">
           <Key>
@@ -108,9 +125,11 @@
           <EntitySet Name="cart" EntityType="Self.cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cart_detail" EntityType="Self.cart_detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="delivery" EntityType="Self.delivery" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="favotite" EntityType="Self.favotite" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="order_detail" EntityType="Self.order_detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="product" EntityType="Self.product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="purchased_product" EntityType="Self.purchased_product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rate" EntityType="Self.rate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="user_info" EntityType="Self.user_info" Schema="dbo" store:Type="Tables" />
@@ -151,6 +170,15 @@
           <Property Name="phone" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="delivery_date" Type="DateTime" Precision="0" />
         </EntityType>
+        <EntityType Name="favotite">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_id" Type="Int32" />
+          <Property Name="product_id" Type="Int32" />
+          <Property Name="status" Type="Boolean" />
+        </EntityType>
         <EntityType Name="order">
           <Key>
             <PropertyRef Name="id" />
@@ -186,6 +214,14 @@
           <Property Name="price" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="is_deleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="purchased_product">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="product_id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="rate">
           <Key>
@@ -223,9 +259,11 @@
           <EntitySet Name="carts" EntityType="Self.cart" />
           <EntitySet Name="cart_detail" EntityType="Self.cart_detail" />
           <EntitySet Name="deliveries" EntityType="Self.delivery" />
+          <EntitySet Name="favotites" EntityType="Self.favotite" />
           <EntitySet Name="orders" EntityType="Self.order" />
           <EntitySet Name="order_detail" EntityType="Self.order_detail" />
           <EntitySet Name="products" EntityType="Self.product" />
+          <EntitySet Name="purchased_product" EntityType="Self.purchased_product" />
           <EntitySet Name="rates" EntityType="Self.rate" />
           <EntitySet Name="users" EntityType="Self.user" />
           <EntitySet Name="user_info" EntityType="Self.user_info" />
@@ -270,6 +308,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="favotites">
+            <EntityTypeMapping TypeName="DBNetModel.favotite">
+              <MappingFragment StoreEntitySet="favotite">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
+                <ScalarProperty Name="status" ColumnName="status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="orders">
             <EntityTypeMapping TypeName="DBNetModel.order">
               <MappingFragment StoreEntitySet="order">
@@ -306,6 +354,15 @@
                 <ScalarProperty Name="price" ColumnName="price" />
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="purchased_product">
+            <EntityTypeMapping TypeName="DBNetModel.purchased_product">
+              <MappingFragment StoreEntitySet="purchased_product">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="product_id" ColumnName="product_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

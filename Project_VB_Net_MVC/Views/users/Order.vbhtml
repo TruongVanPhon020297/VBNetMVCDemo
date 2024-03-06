@@ -5,7 +5,7 @@
 End Code
 
 
-@If Model IsNot Nothing Then
+@If Model.Count > 0 Then
     @<section Class="intro">
         <div Class="bg-image h-100" style="background-color: #6095F0;">
             <div Class="mask d-flex align-items-center h-100">

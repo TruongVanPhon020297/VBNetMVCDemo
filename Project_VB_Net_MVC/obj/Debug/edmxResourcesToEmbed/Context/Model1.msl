@@ -35,6 +35,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="favotites">
+      <EntityTypeMapping TypeName="DBNetModel.favotite">
+        <MappingFragment StoreEntitySet="favotite">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
+          <ScalarProperty Name="status" ColumnName="status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="orders">
       <EntityTypeMapping TypeName="DBNetModel.order">
         <MappingFragment StoreEntitySet="order">
@@ -71,6 +81,15 @@
           <ScalarProperty Name="price" ColumnName="price" />
           <ScalarProperty Name="description" ColumnName="description" />
           <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="purchased_product">
+      <EntityTypeMapping TypeName="DBNetModel.purchased_product">
+        <MappingFragment StoreEntitySet="purchased_product">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

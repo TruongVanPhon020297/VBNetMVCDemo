@@ -81,7 +81,7 @@ End Code
                                      @If userInfo.birth_day IsNot Nothing Then
                                          @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="@userInfo.birth_day.Value.ToShortDateString()">
                                      Else
-                                         @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="2024-03-05">
+                                         @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="@Date.Now().ToShortDateString()">
                                      End If
 
                                  </div>

@@ -1,4 +1,5 @@
-﻿@Code
+﻿@ModelType List(Of order)
+@Code
     ViewData("Title") = "Order"
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
@@ -52,6 +53,7 @@ End Code
         <a href="http://localhost:53005/Manager/OrderPage"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Order</a>
         <a href="http://localhost:53005/Manager/ListUser"><i class="fa fa-fw fa-user"></i> Users</a>
         <a href="http://localhost:53005/Manager/ProductPage"><i class="fa fa-picture-o" aria-hidden="true"></i> Product</a>
+        <a href="http://localhost:53005/Manager/UserInfo"><i class="fa fa-info-circle" aria-hidden="true"></i> Info</a>
         <a href="http://localhost:53005/Users/Logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
     </div>
 
@@ -65,51 +67,54 @@ End Code
                                 <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-borderless mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">
-                                                            STATUS
-                                                        </th>
-                                                        <th scope="col">ORDER DATE</th>
-                                                        <th scope="col">TOTAL PRICE</th>
-                                                        <th scope="col">QUANTITY</th>
-                                                        <th scope="col">DETAILS</th>
-                                                        <th scope="col">CANCEL ORDER</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @For Each detail In Model
-                                                        @<tr>
-                                                            <th scope="row">
-                                                                <div class="form-check">
-                                                                    @If detail.status = True Then
-                                                                        @<input Class="form-check-input" type="checkbox" disabled value="" id="flexCheckDefault1" checked />
-                                                                    Else
-                                                                        @<input Class="form-check-input" type="checkbox" disabled value="" id="flexCheckDefault1" />
-                                                                    End IF
-
-                                                                </div>
+                                            @Html.ActionLink("CREATE ORDER", "CreateCart", "Manager", Nothing, New With {.class = "btn btn-info"})
+                                            @If Model.Count > 0 Then
+                                                @<Table Class="table table-borderless mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">
+                                                                STATUS
                                                             </th>
-                                                            <td>@detail.register_time</td>
-                                                            <td>@detail.total_price</td>
-                                                            <td>@detail.quantity</td>
-                                                            <td>
-                                                                @Html.ActionLink("GO TO", "OrderDetailPage", New With {.id = detail.id})
-                                                            </td>
-                                                            <td>
-                                                                @If detail.status = False Then
-                                                                    @Using (Html.BeginForm("CancelOrder", "users"))
-                                                                        @Html.AntiForgeryToken()
-                                                                        @Html.TextBox("orderId", detail.id, htmlAttributes:=New With {.class = "form-control mr-sm-2", .style = "display: none;"})
-                                                                        @<input type="submit" value="×" class="btn-danger" />
-                                                                    End Using
-                                                                End If
-                                                            </td>
+                                                            <th scope="col"> order Date</th>
+                                                            <th scope="col"> TOTAL PRICE</th>
+                                                            <th scope="col"> QUANTITY</th>
+                                                            <th scope="col"> DETAILS</th>
+                                                            <th scope="col"> CANCEL ORDER</th>
                                                         </tr>
-                                                    Next
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        @For Each detail In Model
+                                                            @<tr>
+                                                                <th scope="row">
+                                                                    <div class="form-check">
+                                                                        @If detail.status = True Then
+                                                                            @<input Class="form-check-input" type="checkbox" disabled value="" id="flexCheckDefault1" checked />
+                                                                        Else
+                                                                            @<input Class="form-check-input" type="checkbox" disabled value="" id="flexCheckDefault1" />
+                                                                        End IF
+
+                                                                    </div>
+                                                                </th>
+                                                                <td>@detail.register_time</td>
+                                                                <td>@detail.total_price</td>
+                                                                <td>@detail.quantity</td>
+                                                                <td>
+                                                                    @Html.ActionLink("GO TO", "OrderDetailPage", New With {.id = detail.id})
+                                                                </td>
+                                                                <td>
+                                                                    @If detail.status = False Then
+                                                                        @Using (Html.BeginForm("CancelOrder", "users"))
+                                                                            @Html.AntiForgeryToken()
+                                                                            @Html.TextBox("orderId", detail.id, htmlAttributes:=New With {.class = "form-control mr-sm-2", .style = "display: none;"})
+                                                                            @<input type="submit" value="×" class="btn-danger" />
+                                                                        End Using
+                                                                    End If
+                                                                </td>
+                                                            </tr>
+                                                        Next
+                                                    </tbody>
+                                                </Table>
+                                            End If
                                         </div>
                                     </div>
                                 </div>

@@ -197,7 +197,7 @@ Namespace Controllers
             If Request.Cookies("Manager") Is Nothing Then
                 Return RedirectToAction("Login", "users")
             End If
-            Dim orders As List(Of order) = New List(Of order)
+            Dim orders As List(Of order) = Nothing
             orders = db.orders.OrderBy(Function(item) item.status).ThenBy(Function(item) item.register_time).ToList()
             Return View("~/Views/managers/Order.vbhtml", orders)
         End Function
@@ -242,6 +242,32 @@ Namespace Controllers
 
             db.Entry(delivery).State = EntityState.Modified
             db.SaveChanges()
+
+            Dim orderDetails As List(Of order_detail) = Nothing
+            orderDetails = (From o In db.order_detail
+                            Where o.order_id = orderInfo.id
+                            Select o).ToList()
+
+            For Each item In orderDetails
+
+                Dim purchasedProduct As purchased_product = Nothing
+                purchasedProduct = (From p In db.purchased_product
+                                    Where p.product_id = item.product_id And p.user_id = orderInfo.user_id
+                                    Select p).FirstOrDefault()
+
+                If purchasedProduct Is Nothing Then
+
+                    purchasedProduct = New purchased_product With {
+                        .product_id = item.product_id,
+                        .user_id = orderInfo.user_id
+                    }
+
+                    db.purchased_product.Add(purchasedProduct)
+                    db.SaveChanges()
+
+                End If
+
+            Next
 
             Return RedirectToAction("OrderPage")
 
@@ -326,6 +352,274 @@ Namespace Controllers
                 TempData("fileCreateUser") = "File is not blank"
                 Return RedirectToAction("CreateUser")
             End If
+        End Function
+
+        Function CreateCart() As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim userCookie = Request.Cookies("Manager")
+            Dim userId = Decimal.Parse(userCookie.Value)
+
+            Dim cart As cart = New cart()
+            Dim cartDetails As List(Of cart_detail) = New List(Of cart_detail)
+
+            Try
+
+                cart = (From c In db.carts
+                        Where c.user_id = userId
+                        Select c).FirstOrDefault()
+
+
+
+
+                cartDetails = (From d In db.cart_detail
+                               Where d.cart_id = cart.id
+                               Select d).ToList()
+            Catch ex As Exception
+
+            End Try
+
+            Dim products As List(Of product) = New List(Of product)
+            products = (From p In db.products
+                        Select p).ToList()
+
+            Dim users As List(Of user) = New List(Of user)
+            users = (From u In db.users
+                     Where u.manager = False
+                     Select u).ToList()
+
+            Dim tupleData As New Tuple(Of List(Of product), List(Of user), cart, List(Of cart_detail))(products, users, cart, cartDetails)
+
+            Return View("~/Views/managers/CreateOrder.vbhtml", tupleData)
+        End Function
+
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function AddProduct(productId As Integer, quantity As Integer) As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim userCookie = Request.Cookies("Manager")
+            Dim userId = Decimal.Parse(userCookie.Value)
+
+
+
+            Dim cart As cart = Nothing
+            cart = (From c In db.carts
+                    Where c.user_id = userId
+                    Select c).FirstOrDefault()
+
+
+            Dim cartRegister As cart = New cart()
+
+            Dim product As product = db.products.Find(Convert.ToDecimal(productId))
+
+            If IsNothing(cart) Then
+
+                cartRegister.user_id = userId
+                cartRegister.quantity = quantity
+                cartRegister.total_price = product.price * quantity
+                db.carts.Add(cartRegister)
+                db.SaveChanges()
+
+
+                Dim cartResult As cart = Nothing
+
+                cartResult = (From p In db.carts
+                              Where p.user_id = userId
+                              Select p).FirstOrDefault()
+
+
+                Dim cartDetailRegister As cart_detail = New cart_detail With {
+                    .image = product.image,
+                    .product_id = product.Id,
+                    .product_name = product.product_name,
+                    .quantity = quantity,
+                    .total_price = product.price * quantity,
+                    .cart_id = cartResult.id,
+                    .price = product.price
+                }
+
+                db.cart_detail.Add(cartDetailRegister)
+                db.SaveChanges()
+
+            Else
+
+                cart.quantity = cart.quantity + quantity
+                cart.total_price = cart.total_price + product.price * quantity
+
+                db.Entry(cart).State = EntityState.Modified
+                db.SaveChanges()
+                Dim cartDetail As cart_detail = (From c In db.cart_detail
+                                                 Where c.product_id = product.Id
+                                                 Select c).FirstOrDefault()
+
+                If IsNothing(cartDetail) Then
+
+                    Dim cartDetailRegister As cart_detail = New cart_detail With {
+                        .image = product.image,
+                        .product_id = product.Id,
+                        .product_name = product.product_name,
+                        .quantity = quantity,
+                        .total_price = product.price * quantity,
+                        .cart_id = cart.id,
+                        .price = product.price
+                    }
+                    db.cart_detail.Add(cartDetailRegister)
+                    db.SaveChanges()
+                Else
+                    cartDetail.quantity = cartDetail.quantity + quantity
+                    cartDetail.total_price = cartDetail.total_price + product.price * quantity
+                    db.Entry(cartDetail).State = EntityState.Modified
+                    db.SaveChanges()
+                End If
+            End If
+            Return RedirectToAction("CreateCart")
+
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function Checkout(userId As Integer, address As String, phone As String) As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim userCookie = Request.Cookies("Manager")
+            Dim userIdCookie = Decimal.Parse(userCookie.Value)
+
+            If address.Length = 0 Then
+                TempData("addressCheckout") = "Address is not blank"
+                Return RedirectToAction("CreateCart")
+            End If
+
+            If phone.Length = 0 Then
+                TempData("phoneCheckout") = "Phone is not blank"
+                Return RedirectToAction("CreateCart")
+            End If
+
+            Dim cart As cart = Nothing
+
+            cart = (From c In db.carts
+                    Where c.user_id = userIdCookie
+                    Select c).FirstOrDefault()
+
+            Dim delivery As delivery = New delivery With {
+                .location = address,
+                .phone = phone
+            }
+
+            db.deliveries.Add(delivery)
+            db.SaveChanges()
+
+            Dim deliveryResult As delivery = Nothing
+            deliveryResult = (From d In db.deliveries
+                              Order By d.Id Descending
+                              Select d).FirstOrDefault()
+
+            Dim orderRegister = ToOrder(cart)
+            orderRegister.delivery_id = deliveryResult.Id
+            orderRegister.user_id = userId
+
+            db.orders.Add(orderRegister)
+            db.SaveChanges()
+            db.carts.Remove(cart)
+            db.SaveChanges()
+
+            Dim cartDetails As List(Of cart_detail) = Nothing
+
+            cartDetails = (From c In db.cart_detail
+                           Where c.cart_id = cart.id
+                           Select c).ToList()
+
+            Dim orderResult As order = Nothing
+            orderResult = (From o In db.orders
+                           Where o.user_id = userId
+                           Order By o.id Descending
+                           Select o).FirstOrDefault()
+
+            Dim orderDetails As List(Of order_detail) = ToOrderDetails(cartDetails, orderResult.id)
+
+            db.order_detail.AddRange(orderDetails)
+            db.SaveChanges()
+
+            db.cart_detail.RemoveRange(cartDetails)
+            db.SaveChanges()
+
+            Return RedirectToAction("OrderPage")
+
+
+        End Function
+
+        Function ToOrder(ByVal cart As cart) As order
+
+            Dim order As order = New order()
+            order.user_id = cart.user_id
+            order.quantity = cart.quantity
+            order.total_price = cart.total_price
+            order.register_time = DateTime.Now()
+            order.status = False
+
+            Return order
+
+        End Function
+
+        Function ToOrderDetails(ByVal cartDetails As List(Of cart_detail), ByVal orderId As String) As List(Of order_detail)
+
+            Dim orderDetails As List(Of order_detail) = New List(Of order_detail)
+
+            For Each item In cartDetails
+                Dim orderDetail As order_detail = New order_detail With {
+                    .order_id = orderId,
+                    .product_id = item.product_id,
+                    .image = item.image,
+                    .total_price = item.total_price,
+                    .quantity = item.quantity,
+                    .product_name = item.product_name,
+                    .price = item.price
+                }
+
+                orderDetails.Add(orderDetail)
+
+            Next
+
+            Return orderDetails
+
+        End Function
+
+        Function UserInfo() As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim userCookie = Request.Cookies("Manager")
+            Dim userId = Decimal.Parse(userCookie.Value)
+
+            Dim user As user = db.users.Find(userId)
+
+            Dim userInfoData As user_info = New user_info()
+            userInfoData = (From u In db.user_info
+                            Where u.user_id = user.id).FirstOrDefault()
+
+
+            Dim tupleData As New Tuple(Of user, user_info)(user, userInfoData)
+
+            ViewBag.ImagePath = "http://bootdey.com/img/Content/avatar/avatar1.png"
+
+            If userInfoData.image IsNot Nothing Then
+                Dim imageUrl As String = Url.Content("~/Uploads/" & userInfoData.image)
+                ViewBag.ImagePath = imageUrl
+            End If
+
+            Return View("~/Views/managers/UserInfo.vbhtml", tupleData)
         End Function
 
     End Class

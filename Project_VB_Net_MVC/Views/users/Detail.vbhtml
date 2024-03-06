@@ -121,7 +121,11 @@ End Code
     Dim rate As rate = Model.Item3
     Dim product As product = Model.Item2
     Dim rateTotal As RateInfo = Model.Item4
-    Dim rateRatio As Integer = Math.Floor(rateTotal.ratioRate)
+    Dim rateRatio As Integer = 5
+
+    If Not Double.IsNaN(rateTotal.ratioRate) Then
+        rateRatio = Math.Floor(rateTotal.ratioRate)
+    End If
 
     @<section class="py-5">
 
@@ -133,7 +137,7 @@ End Code
                 <aside class="col-lg-6">
                     <div class="border rounded-4 mb-3 d-flex justify-content-center">
                         <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp">
-                            <img width="300" height="300" margin: auto;" class="rounded-4 fit" src="@Url.Content("~/Uploads/" & product.image)"/>
+                            <img width="300" height="300" margin: auto;" class="rounded-4 fit" src="@Url.Content("~/Uploads/" & product.image)" />
                         </a>
                     </div>
                 </aside>
@@ -176,7 +180,12 @@ End Code
             <div class="col-sm-3">
                 <div class="rating-block">
                     <h4>Average user rating</h4>
-                    <h2 class="bold padding-bottom-7">@rateTotal.ratioRate<small>/ 5</small></h2>
+                    @If Not Double.IsNaN(rateTotal.ratioRate) Then
+                        @<h2 Class="bold padding-bottom-7">@Math.Round(rateTotal.ratioRate, 1)<small>/ 5</small></h2>
+                    Else
+                        @<h2 Class="bold padding-bottom-7">5<small>/ 5</small></h2>
+                    End If
+
                     @For i = 1 To 5
                         If i <= rateRatio Then
                             @<Button type="button" Class="btn btn-warning btn-xs" aria-label="Left Align">

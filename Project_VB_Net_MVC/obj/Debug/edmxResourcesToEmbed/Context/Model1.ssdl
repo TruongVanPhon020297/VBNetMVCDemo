@@ -31,6 +31,15 @@
     <Property Name="phone" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="delivery_date" Type="date" />
   </EntityType>
+  <EntityType Name="favotite">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="user_id" Type="int" />
+    <Property Name="product_id" Type="int" />
+    <Property Name="status" Type="bit" />
+  </EntityType>
   <EntityType Name="order">
     <Key>
       <PropertyRef Name="id" />
@@ -66,6 +75,14 @@
     <Property Name="price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
     <Property Name="description" Type="nvarchar" MaxLength="255" />
     <Property Name="is_deleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="purchased_product">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="product_id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="rate">
     <Key>
@@ -103,9 +120,11 @@
     <EntitySet Name="cart" EntityType="Self.cart" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="cart_detail" EntityType="Self.cart_detail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="delivery" EntityType="Self.delivery" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="favotite" EntityType="Self.favotite" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order_detail" EntityType="Self.order_detail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="product" EntityType="Self.product" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="purchased_product" EntityType="Self.purchased_product" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="rate" EntityType="Self.rate" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="user_info" EntityType="Self.user_info" Schema="dbo" store:Type="Tables" />

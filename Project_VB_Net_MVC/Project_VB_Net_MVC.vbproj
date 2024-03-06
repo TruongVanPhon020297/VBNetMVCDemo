@@ -167,6 +167,9 @@
     <Compile Include="Context\delivery.vb">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Context\favotite.vb">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Context\Model1.Context.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -191,6 +194,9 @@
     <Compile Include="Context\product.vb">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Context\purchased_product.vb">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Context\rate.vb">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -205,6 +211,7 @@
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductData.vb" />
     <Compile Include="Models\RateData.vb" />
     <Compile Include="Models\RateInfo.vb" />
     <Compile Include="Models\UserData.vb" />
@@ -300,6 +307,10 @@
     <Content Include="Views\managers\Order.vbhtml" />
     <Content Include="Views\managers\OrderDetail.vbhtml" />
     <Content Include="Views\managers\CreateUser.vbhtml" />
+    <Content Include="Views\managers\CreateOrder.vbhtml" />
+    <Content Include="Views\managers\UserInfo.vbhtml" />
+    <Content Include="Views\users\Favorite.vbhtml" />
+    <Content Include="Views\users\PurchasedProduct.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

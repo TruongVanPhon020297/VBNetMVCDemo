@@ -119,7 +119,7 @@ End Code
     </div>
 
 Else
-    @<p>No order information available.</p>
+    @<p>No cart information available.</p>
     @Html.ActionLink("Back to shopping", "Product", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
 End If
 

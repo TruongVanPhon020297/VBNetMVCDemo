@@ -81,7 +81,7 @@ End Code
                         @<div Class="row gx-3 mb-3">
                             <div Class="col-md-6">
                                 <Label Class="text-muted font-weight-normal">Delivery Date</Label>
-                                <input Class="form-control" id="inputBirthday" type="date" name="deliveryDate"/>
+                                <input Class="form-control" id="inputBirthday" type="date" name="deliveryDate" value="@Date.Now().ToShortDateString()"/>
                             </div>
                         </div>
                         @<div Class="float-right" style="margin-top:10px">

@@ -157,27 +157,44 @@ Namespace Controllers
         <ValidateAntiForgeryToken()>
         Function UpdateInfoUser(address As String, phone As String, birthday As Date) As ActionResult
 
-            If Request.Cookies("UserName") Is Nothing Then
+            If Request.Cookies("UserName") Is Nothing And Request.Cookies("Manager") Is Nothing Then
                 Return RedirectToAction("Login")
             End If
-            Dim userCookie = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userCookie.Value)
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId As Integer
+
+            If userInfo Is Nothing Then
+                Dim managerInfo = Request.Cookies("Manager")
+                userId = Decimal.Parse(managerInfo.Value)
+            Else
+                userId = Decimal.Parse(userInfo.Value)
+            End If
 
             If phone.Length = 0 Then
                 TempData("phoneUpdate") = "Phone is not blank"
-                Return RedirectToAction("UserInfo")
+                If userInfo Is Nothing Then
+                    Return RedirectToAction("UserInfo", "Manager")
+                Else
+                    Return RedirectToAction("UserInfo")
+                End If
             End If
 
             If address.Length = 0 Then
                 TempData("addressUpdate") = "Address is not blank"
-                Return RedirectToAction("UserInfo")
+                If userInfo Is Nothing Then
+                    Return RedirectToAction("UserInfo", "Manager")
+                Else
+                    Return RedirectToAction("UserInfo")
+                End If
             End If
-
             If birthday.ToShortDateString().Length = 0 Then
                 TempData("birthdayUpdate") = "Birthday is not blank"
-                Return RedirectToAction("UserInfo")
+                If userInfo Is Nothing Then
+                    Return RedirectToAction("UserInfo", "Manager")
+                Else
+                    Return RedirectToAction("UserInfo")
+                End If
             End If
-
 
             Dim user As user = db.users.Find(userId)
 
@@ -191,19 +208,28 @@ Namespace Controllers
 
             db.Entry(userInfoData).State = EntityState.Modified
             db.SaveChanges()
-
-            Return RedirectToAction("UserInfo")
-
+            If userInfo Is Nothing Then
+                Return RedirectToAction("UserInfo", "Manager")
+            Else
+                Return RedirectToAction("UserInfo")
+            End If
         End Function
 
         <HttpPost>
         Function Upload(file As HttpPostedFileBase) As ActionResult
 
-            If Request.Cookies("UserName") Is Nothing Then
+            If Request.Cookies("UserName") Is Nothing And Request.Cookies("Manager") Is Nothing Then
                 Return RedirectToAction("Login")
             End If
             Dim userCookie = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userCookie.Value)
+            Dim userId As Integer
+
+            If userCookie Is Nothing Then
+                Dim managerInfo = Request.Cookies("Manager")
+                userId = Decimal.Parse(managerInfo.Value)
+            Else
+                userId = Decimal.Parse(userCookie.Value)
+            End If
 
             If file IsNot Nothing AndAlso file.ContentLength > 0 Then
                 Dim fileName As String = System.IO.Path.GetFileName(file.FileName)
@@ -220,9 +246,20 @@ Namespace Controllers
                 db.SaveChanges()
             Else
                 TempData("imageUpload") = "Image invalid"
+
+                If userCookie Is Nothing Then
+                    Return RedirectToAction("UserInfo", "Manager")
+                Else
+                    Return RedirectToAction("UserInfo")
+                End If
+            End If
+
+            If userCookie Is Nothing Then
+                Return RedirectToAction("UserInfo", "Manager")
+            Else
                 Return RedirectToAction("UserInfo")
             End If
-            Return RedirectToAction("UserInfo")
+
         End Function
 
         ' Cart
@@ -232,7 +269,14 @@ Namespace Controllers
         Function RemoveDetail(detailId As String) As ActionResult
 
             Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
+            Dim userId As Integer
+
+            If userInfo Is Nothing Then
+                Dim managerInfo = Request.Cookies("Manager")
+                userId = Decimal.Parse(managerInfo.Value)
+            Else
+                userId = Decimal.Parse(userInfo.Value)
+            End If
 
             Dim cart As cart = Nothing
 
@@ -261,7 +305,11 @@ Namespace Controllers
                 If cart.quantity = 1 Or cartDetails.Count = 1 Then
                     db.carts.Remove(cart)
                     db.SaveChanges()
-                    Return RedirectToAction("CartInfo")
+                    If userInfo Is Nothing Then
+                        Return RedirectToAction("CreateCart", "Manager")
+                    Else
+                        Return RedirectToAction("CartInfo")
+                    End If
                 End If
 
                 cart.quantity = cart.quantity - cartDetail.quantity
@@ -271,7 +319,11 @@ Namespace Controllers
                 db.SaveChanges()
 
             End If
-            Return RedirectToAction("CartInfo")
+            If userInfo Is Nothing Then
+                Return RedirectToAction("CreateCart", "Manager")
+            Else
+                Return RedirectToAction("CartInfo")
+            End If
         End Function
 
         <HttpPost()>
@@ -356,7 +408,16 @@ Namespace Controllers
         Function Increament(detailId As String) As ActionResult
 
             Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim userId As Integer
+
+            If userInfo Is Nothing Then
+                Dim managerInfo = Request.Cookies("Manager")
+                userId = Decimal.Parse(managerInfo.Value)
+            Else
+                userId = Decimal.Parse(userInfo.Value)
+            End If
+
 
             Dim cart As cart = Nothing
 
@@ -388,7 +449,13 @@ Namespace Controllers
 
             End If
 
-            Return RedirectToAction("CartInfo")
+            If userInfo Is Nothing Then
+                Return RedirectToAction("CreateCart", "Manager")
+            Else
+                Return RedirectToAction("CartInfo")
+            End If
+
+
 
         End Function
 
@@ -397,7 +464,14 @@ Namespace Controllers
         Function Decreament(detailId As String) As ActionResult
 
             Dim userInfo = Request.Cookies("UserName")
-            Dim userId = Decimal.Parse(userInfo.Value)
+            Dim userId As Integer
+
+            If userInfo Is Nothing Then
+                Dim managerInfo = Request.Cookies("Manager")
+                userId = Decimal.Parse(managerInfo.Value)
+            Else
+                userId = Decimal.Parse(userInfo.Value)
+            End If
 
             Dim cart As cart = Nothing
 
@@ -430,7 +504,11 @@ Namespace Controllers
 
             End If
 
-            Return RedirectToAction("CartInfo")
+            If userInfo Is Nothing Then
+                Return RedirectToAction("CreateCart", "Manager")
+            Else
+                Return RedirectToAction("CartInfo")
+            End If
 
         End Function
 
@@ -649,7 +727,34 @@ Namespace Controllers
             If Request.Cookies("UserName") Is Nothing Then
                 Return RedirectToAction("Login")
             End If
-            Return View(db.products.ToList())
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim favoriteList As List(Of favotite) = New List(Of favotite)
+            favoriteList = (From f In db.favotites
+                            Where f.user_id = userId
+                            Select f).ToList()
+
+            Dim products As List(Of product) = New List(Of product)
+            products = db.products.ToList()
+
+            Dim productDataList As List(Of ProductData) = New List(Of ProductData)
+
+            For Each item In products
+                Dim productData As ProductData = New ProductData()
+                productData.product = item
+                productData.isFavorite = False
+                For Each itemF In favoriteList
+                    If itemF.product_id = item.Id And itemF.status Then
+                        productData.isFavorite = True
+                        Exit For
+                    End If
+                Next
+                productDataList.Add(productData)
+            Next
+
+            Return View("Product", productDataList)
         End Function
 
         <HttpPost()>
@@ -749,42 +854,12 @@ Namespace Controllers
             Return View("Detail", tupleData)
         End Function
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         Protected Overrides Sub Dispose(ByVal disposing As Boolean)
             If (disposing) Then
                 db.Dispose()
             End If
             MyBase.Dispose(disposing)
         End Sub
-
-
-
-
-
 
         Function Logout() As ActionResult
             If (Not Request.Cookies("UserName") Is Nothing) Then
@@ -871,16 +946,6 @@ Namespace Controllers
             Return RedirectToAction("OrderInfo")
         End Function
 
-
-
-
-
-
-
-
-
-
-
         <HttpPost()>
         <ValidateAntiForgeryToken()>
         Function CreateRate(rating As Integer, comment As String, productId As Integer) As ActionResult
@@ -888,12 +953,13 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
-            Dim rate As rate = New rate()
-            rate.star = rating
-            rate.user_id = userId
-            rate.register_time = Date.Now()
-            rate.comment = comment
-            rate.product_id = productId
+            Dim rate As rate = New rate With {
+                .star = rating,
+                .user_id = userId,
+                .register_time = Date.Now(),
+                .comment = comment,
+                .product_id = productId
+            }
 
             db.rates.Add(rate)
             db.SaveChanges()
@@ -902,7 +968,140 @@ Namespace Controllers
 
         End Function
 
+        Function Favorite(productId As Integer) As ActionResult
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim favoriteResult As favotite = New favotite()
+            favoriteResult = (From f In db.favotites
+                              Where f.product_id = productId And f.user_id = userId
+                              Select f).FirstOrDefault()
+
+            If favoriteResult Is Nothing Then
+
+                Dim favoriteRegister As favotite = New favotite With {
+                    .product_id = productId,
+                    .user_id = userId,
+                    .status = True
+                }
+
+                db.favotites.Add(favoriteRegister)
+                db.SaveChanges()
+            Else
+                If favoriteResult.status Then
+                    favoriteResult.status = False
+                Else
+                    favoriteResult.status = True
+                End If
+                db.Entry(favoriteResult).State = EntityState.Modified
+                db.SaveChanges()
+            End If
+
+            Return RedirectToAction("Product")
+
+        End Function
+
+        Function FavoriteInfo() As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim favorites As List(Of favotite) = New List(Of favotite)
+            favorites = (From f In db.favotites
+                         Where f.user_id = userId And f.status = True
+                         Select f).ToList()
+
+            Dim products As List(Of product) = Nothing
+
+
+            If favorites IsNot Nothing Then
+
+                products = New List(Of product)
+
+                For Each item In favorites
+                    Dim product As product = New product()
+                    product = (From p In db.products
+                               Where p.Id = item.product_id
+                               Select p).FirstOrDefault()
+
+                    If product IsNot Nothing Then
+                        products.Add(product)
+                    End If
+                Next
+
+            End If
+
+            Return View("Favorite", products)
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function RemoveFavorite(productId As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim favorite As favotite = New favotite()
+            favorite = (From f In db.favotites
+                        Where f.product_id = productId And f.user_id = userId
+                        Select f).FirstOrDefault()
+
+            If favorite IsNot Nothing Then
+                favorite.status = False
+                db.Entry(favorite).State = EntityState.Modified
+                db.SaveChanges()
+            End If
+
+            Return RedirectToAction("FavoriteInfo")
+
+
+        End Function
+
+        Function PurchasedProduct() As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim products As List(Of product) = New List(Of product)
+
+            Dim purchasedProducts As List(Of purchased_product) = Nothing
+            purchasedProducts = (From p In db.purchased_product
+                                 Where p.user_id = userId).ToList()
+
+            If purchasedProducts IsNot Nothing Then
+
+                For Each item In purchasedProducts
+                    Dim product As product = Nothing
+                    product = db.products.Find(item.product_id)
+
+                    If product IsNot Nothing Then
+                        products.Add(product)
+                    End If
+
+                Next
+
+            End If
+
+            Return View("PurchasedProduct", products)
+        End Function
+
     End Class
+
+
+
 
 
 
