@@ -1,4 +1,6 @@
-﻿@Code
+﻿@ModelType List(Of category)
+
+@Code
     ViewData("Title") = "CreateProduct"
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
@@ -40,6 +42,16 @@ End Code
                                         @productNameCreate
                                     </p>
                                 End If
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Category</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                <select class="form-control" name="categoryId" aria-label="Default select example">
+                                    @For Each item In Model
+                                        @<option value="@item.id">@item.category_name</option>
+                                    Next
+                                </select>
                             </div>
                         </div>
                         <div Class="form-group">

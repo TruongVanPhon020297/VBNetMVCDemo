@@ -95,12 +95,16 @@ Namespace Controllers
             If Request.Cookies("Manager") Is Nothing Then
                 Return RedirectToAction("Login", "users")
             End If
-            Return View("~/Views/managers/CreateProduct.vbhtml")
+
+            Dim categories As List(Of category) = New List(Of category)
+            categories = db.categories.ToList()
+
+            Return View("~/Views/managers/CreateProduct.vbhtml", categories)
         End Function
 
         <HttpPost>
         <ValidateAntiForgeryToken()>
-        Function CreateProduct(file As HttpPostedFileBase, productName As String, price As Decimal, description As String) As ActionResult
+        Function CreateProduct(file As HttpPostedFileBase, productName As String, price As Decimal, description As String, categoryId As Integer) As ActionResult
 
             If file IsNot Nothing AndAlso file.ContentLength > 0 Then
 
@@ -123,7 +127,8 @@ Namespace Controllers
                     .image = fileName,
                     .price = price,
                     .is_deleted = False,
-                    .description = description
+                    .description = description,
+                    .category_id = categoryId
                 }
 
                 db.products.Add(product)
@@ -621,6 +626,106 @@ Namespace Controllers
 
             Return View("~/Views/managers/UserInfo.vbhtml", tupleData)
         End Function
+
+        Function CustomOrderPage() As ActionResult
+
+            Dim customOrders As List(Of custom_order) = Nothing
+            customOrders = db.custom_order.ToList()
+
+            Return View("~/Views/managers/CustomOrder.vbhtml", customOrders)
+        End Function
+
+        Function CustomOrderDetailPage(id As Integer) As ActionResult
+
+            Dim customOrders As custom_order = Nothing
+            customOrders = db.custom_order.Find(id)
+
+            Dim category As category = Nothing
+            category = db.categories.Find(customOrders.category_id)
+
+            Dim tupleData As New Tuple(Of custom_order, category)(customOrders, category)
+
+            Return View("~/Views/managers/CustomOrderDetail.vbhtml", tupleData)
+        End Function
+
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function ConfirmCustomOrder(orderId As Integer) As ActionResult
+
+            Dim customOrder As custom_order = Nothing
+            customOrder = db.custom_order.Find(orderId)
+
+            customOrder.confirm = True
+
+            db.Entry(customOrder).State = EntityState.Modified
+            db.SaveChanges()
+
+            Dim notification As custom_order_notification = New custom_order_notification With {
+                .user_id = customOrder.user_id,
+                .status = False,
+                .custom_order_id = customOrder.id,
+                .content_notification = "Chúng tôi xin chân thành gửi lời cảm ơn sâu sắc đến Quý vị đã tin tưởng và đặt hàng tại cửa hàng của chúng tôi. 
+                Sự ủng hộ của Quý vị không chỉ là một sự khích lệ mà còn là nguồn động viên lớn lao cho chúng tôi. 
+                Chúng tôi cam kết mang đến cho Quý vị những sản phẩm chất lượng cao và dịch vụ tận tâm nhất. 
+                Sự lựa chọn của Quý vị đã làm cho chúng tôi cảm động và chúng tôi sẽ không ngừng nỗ lực để đảm bảo rằng trải nghiệm của Quý vị với chúng tôi sẽ vượt xa những gì Quý vị mong đợi.",
+                .register_date = DateTime.Now()
+            }
+
+            db.custom_order_notification.Add(notification)
+            db.SaveChanges()
+
+            Return RedirectToAction("CustomOrderDetailPage", New With {.id = orderId})
+
+        End Function
+
+        <HttpPost>
+        <ValidateAntiForgeryToken()>
+        Function UploadImageCutomOrder(file As HttpPostedFileBase, orderId As Integer) As ActionResult
+
+            If file IsNot Nothing AndAlso file.ContentLength > 0 Then
+                Dim fileName As String = System.IO.Path.GetFileName(file.FileName)
+                Dim path As String = Server.MapPath("~/Uploads/" & fileName)
+                file.SaveAs(path)
+
+                Dim customOrder As custom_order = New custom_order()
+                customOrder = db.custom_order.Find(orderId)
+                customOrder.img_product = fileName
+
+                db.Entry(customOrder).State = EntityState.Modified
+                db.SaveChanges()
+
+            End If
+            Return RedirectToAction("CustomOrderDetailPage", New With {.id = orderId})
+        End Function
+
+        <HttpPost>
+        <ValidateAntiForgeryToken()>
+        Function CustomOrderSuccess(orderId As Integer, totalPrice As Integer) As ActionResult
+
+            Dim customOrder As custom_order = Nothing
+            customOrder = db.custom_order.Find(orderId)
+
+            customOrder.status = True
+            customOrder.total_price = totalPrice
+
+            db.Entry(customOrder).State = EntityState.Modified
+            db.SaveChanges()
+
+            Dim notification As custom_order_notification = New custom_order_notification With {
+                .user_id = customOrder.user_id,
+                .status = False,
+                .custom_order_id = customOrder.id,
+                .content_notification = "Chúng tôi xin trân trọng thông báo rằng đơn hàng đã đặt giao vào ngày " & customOrder.delivery_date.ToShortDateString() & " của bạn đã được hoàn thành và sẵn sàng để giao hàng.",
+                .register_date = DateTime.Now()
+            }
+
+            db.custom_order_notification.Add(notification)
+            db.SaveChanges()
+
+            Return RedirectToAction("CustomOrderDetailPage", New With {.id = orderId})
+        End Function
+
 
     End Class
 End Namespace

@@ -164,10 +164,19 @@
     <Compile Include="Context\cart_detail.vb">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Context\category.vb">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\custom_order.vb">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\custom_order_notification.vb">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Context\delivery.vb">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Context\favotite.vb">
+    <Compile Include="Context\favorite.vb">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Context\Model1.Context.vb">
@@ -311,6 +320,12 @@
     <Content Include="Views\managers\UserInfo.vbhtml" />
     <Content Include="Views\users\Favorite.vbhtml" />
     <Content Include="Views\users\PurchasedProduct.vbhtml" />
+    <Content Include="Views\users\CustomOrder.vbhtml" />
+    <Content Include="Views\users\CustomOrderInfo.vbhtml" />
+    <Content Include="Views\managers\CustomOrder.vbhtml" />
+    <Content Include="Views\managers\CustomOrderDetail.vbhtml" />
+    <Content Include="Views\users\Notification.vbhtml" />
+    <Content Include="Views\users\CustomOrderDetail.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

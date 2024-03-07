@@ -25,6 +25,48 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="categories">
+      <EntityTypeMapping TypeName="DBNetModel.category">
+        <MappingFragment StoreEntitySet="category">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="category_name" ColumnName="category_name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="custom_order">
+      <EntityTypeMapping TypeName="DBNetModel.custom_order">
+        <MappingFragment StoreEntitySet="custom_order">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="category_id" ColumnName="category_id" />
+          <ScalarProperty Name="size_description" ColumnName="size_description" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="quantity" ColumnName="quantity" />
+          <ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="delivery_date" ColumnName="delivery_date" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="recipient_full_name" ColumnName="recipient_full_name" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="register_time" ColumnName="register_time" />
+          <ScalarProperty Name="confirm" ColumnName="confirm" />
+          <ScalarProperty Name="img_product" ColumnName="img_product" />
+          <ScalarProperty Name="total_price" ColumnName="total_price" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="custom_order_notification">
+      <EntityTypeMapping TypeName="DBNetModel.custom_order_notification">
+        <MappingFragment StoreEntitySet="custom_order_notification">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="custom_order_id" ColumnName="custom_order_id" />
+          <ScalarProperty Name="content_notification" ColumnName="content_notification" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="register_date" ColumnName="register_date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="deliveries">
       <EntityTypeMapping TypeName="DBNetModel.delivery">
         <MappingFragment StoreEntitySet="delivery">
@@ -35,9 +77,9 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="favotites">
-      <EntityTypeMapping TypeName="DBNetModel.favotite">
-        <MappingFragment StoreEntitySet="favotite">
+    <EntitySetMapping Name="favorites">
+      <EntityTypeMapping TypeName="DBNetModel.favorite">
+        <MappingFragment StoreEntitySet="favorite">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="user_id" ColumnName="user_id" />
           <ScalarProperty Name="product_id" ColumnName="product_id" />
@@ -81,6 +123,7 @@
           <ScalarProperty Name="price" ColumnName="price" />
           <ScalarProperty Name="description" ColumnName="description" />
           <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
+          <ScalarProperty Name="category_id" ColumnName="category_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

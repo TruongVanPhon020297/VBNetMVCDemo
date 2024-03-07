@@ -1,6 +1,7 @@
-﻿@ModelType List(Of order)
+﻿@ModelType List(Of custom_order)
+
 @Code
-    ViewData("Title") = "Order"
+    ViewData("Title") = "CustomOrder"
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
 
@@ -59,17 +60,16 @@ End Code
     </div>
 
     <div class="main">
-        <section class="intro">
-            <div class="bg-image h-100" style="background-color: #6095F0;">
-                <div class="mask d-flex align-items-center h-100">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-12">
-                                <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            @Html.ActionLink("CREATE ORDER", "CreateCart", "Manager", Nothing, New With {.class = "btn btn-info"})
-                                            @If Model.Count > 0 Then
+        <section Class="intro">
+            <div Class="bg-image h-100" style="background-color: #6095F0;">
+                <div Class="mask d-flex align-items-center h-100">
+                    <div Class="container">
+                        <div Class="row justify-content-center">
+                            <div Class="col-12">
+                                <div Class="card shadow-2-strong" style="background-color: #f5f7fa;">
+                                    <div Class="card-body">
+                                        <div Class="table-responsive">
+                                            @If Model IsNot Nothing Then
                                                 @<Table Class="table table-borderless mb-0">
                                                     <thead>
                                                         <tr>
@@ -77,8 +77,9 @@ End Code
                                                                 STATUS
                                                             </th>
                                                             <th scope="col"> order Date</th>
-                                                            <th scope="col"> TOTAL PRICE</th>
+                                                            <th scope="col"> SIZE DESCRIPTION</th>
                                                             <th scope="col"> QUANTITY</th>
+                                                            <th scope="col"> delivery Date</th>
                                                             <th scope="col"> DETAILS</th>
                                                             <th scope="col"> CANCEL ORDER</th>
                                                         </tr>
@@ -97,10 +98,11 @@ End Code
                                                                     </div>
                                                                 </th>
                                                                 <td>@detail.register_time</td>
-                                                                <td>@detail.total_price</td>
+                                                                <td>@detail.size_description</td>
                                                                 <td>@detail.quantity</td>
+                                                                <td>@detail.delivery_date</td>
                                                                 <td>
-                                                                    @Html.ActionLink("GO TO", "OrderDetailPage", New With {.id = detail.id})
+                                                                    @Html.ActionLink("GO TO", "CustomOrderDetailPage", New With {.id = detail.id})
                                                                 </td>
                                                                 <td>
                                                                     @If detail.status = False Then

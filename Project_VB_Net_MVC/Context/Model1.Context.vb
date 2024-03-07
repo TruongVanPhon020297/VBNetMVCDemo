@@ -24,8 +24,11 @@ Partial Public Class DBNetEntities
 
     Public Overridable Property carts() As DbSet(Of cart)
     Public Overridable Property cart_detail() As DbSet(Of cart_detail)
+    Public Overridable Property categories() As DbSet(Of category)
+    Public Overridable Property custom_order() As DbSet(Of custom_order)
+    Public Overridable Property custom_order_notification() As DbSet(Of custom_order_notification)
     Public Overridable Property deliveries() As DbSet(Of delivery)
-    Public Overridable Property favotites() As DbSet(Of favotite)
+    Public Overridable Property favorites() As DbSet(Of favorite)
     Public Overridable Property orders() As DbSet(Of order)
     Public Overridable Property order_detail() As DbSet(Of order_detail)
     Public Overridable Property products() As DbSet(Of product)

@@ -10,13 +10,12 @@
 Imports System
 Imports System.Collections.Generic
 
-Partial Public Class product
-    Public Property Id As Integer
-    Public Property product_name As String
-    Public Property image As String
-    Public Property price As Decimal
-    Public Property description As String
-    Public Property is_deleted As Nullable(Of Boolean)
-    Public Property category_id As Nullable(Of Integer)
+Partial Public Class custom_order_notification
+    Public Property id As Integer
+    Public Property user_id As Integer
+    Public Property custom_order_id As Integer
+    Public Property content_notification As String
+    Public Property status As Boolean
+    Public Property register_date As Nullable(Of Date)
 
 End Class

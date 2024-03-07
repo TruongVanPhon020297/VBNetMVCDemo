@@ -10,13 +10,10 @@
 Imports System
 Imports System.Collections.Generic
 
-Partial Public Class product
-    Public Property Id As Integer
-    Public Property product_name As String
-    Public Property image As String
-    Public Property price As Decimal
-    Public Property description As String
-    Public Property is_deleted As Nullable(Of Boolean)
-    Public Property category_id As Nullable(Of Integer)
+Partial Public Class favorite
+    Public Property id As Integer
+    Public Property user_id As Nullable(Of Integer)
+    Public Property product_id As Nullable(Of Integer)
+    Public Property status As Nullable(Of Boolean)
 
 End Class

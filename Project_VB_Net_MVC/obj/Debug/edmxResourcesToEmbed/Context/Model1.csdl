@@ -22,6 +22,45 @@
     <Property Name="product_id" Type="Int32" Nullable="false" />
     <Property Name="price" Type="Decimal" Precision="18" Scale="0" />
   </EntityType>
+  <EntityType Name="category">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="category_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="custom_order">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="category_id" Type="Int32" Nullable="false" />
+    <Property Name="size_description" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="description" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="quantity" Type="Int32" Nullable="false" />
+    <Property Name="note" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+    <Property Name="delivery_date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="recipient_full_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="phone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="status" Type="Boolean" />
+    <Property Name="user_id" Type="Int32" />
+    <Property Name="register_time" Type="DateTime" Precision="3" />
+    <Property Name="confirm" Type="Boolean" />
+    <Property Name="img_product" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+    <Property Name="total_price" Type="Decimal" Precision="18" Scale="0" />
+  </EntityType>
+  <EntityType Name="custom_order_notification">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="user_id" Type="Int32" Nullable="false" />
+    <Property Name="custom_order_id" Type="Int32" Nullable="false" />
+    <Property Name="content_notification" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <Property Name="register_date" Type="DateTime" Precision="3" />
+  </EntityType>
   <EntityType Name="delivery">
     <Key>
       <PropertyRef Name="Id" />
@@ -31,7 +70,7 @@
     <Property Name="phone" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="delivery_date" Type="DateTime" Precision="0" />
   </EntityType>
-  <EntityType Name="favotite">
+  <EntityType Name="favorite">
     <Key>
       <PropertyRef Name="id" />
     </Key>
@@ -75,6 +114,7 @@
     <Property Name="price" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
     <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="is_deleted" Type="Boolean" />
+    <Property Name="category_id" Type="Int32" />
   </EntityType>
   <EntityType Name="purchased_product">
     <Key>
@@ -119,8 +159,11 @@
   <EntityContainer Name="DBNetEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="carts" EntityType="Self.cart" />
     <EntitySet Name="cart_detail" EntityType="Self.cart_detail" />
+    <EntitySet Name="categories" EntityType="Self.category" />
+    <EntitySet Name="custom_order" EntityType="Self.custom_order" />
+    <EntitySet Name="custom_order_notification" EntityType="Self.custom_order_notification" />
     <EntitySet Name="deliveries" EntityType="Self.delivery" />
-    <EntitySet Name="favotites" EntityType="Self.favotite" />
+    <EntitySet Name="favorites" EntityType="Self.favorite" />
     <EntitySet Name="orders" EntityType="Self.order" />
     <EntitySet Name="order_detail" EntityType="Self.order_detail" />
     <EntitySet Name="products" EntityType="Self.product" />

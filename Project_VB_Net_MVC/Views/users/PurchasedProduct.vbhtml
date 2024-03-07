@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
 
-@If Model IsNot Nothing Then
+@If Model.Count > 0 Then
     @<div class="container px-3 my-5 clearfix">
         <!-- Shopping cart table -->
         <div class="card">

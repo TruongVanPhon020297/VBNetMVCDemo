@@ -1,0 +1,148 @@
+﻿@ModelType Tuple(Of custom_order, category)
+@Code
+    ViewData("Title") = "CustomOrderDetail"
+    Layout = "~/Views/Shared/_Layout.vbhtml"
+End Code
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container-fluid bootstrap snippets bootdeys">
+    <div class="row">
+
+        @If Model IsNot Nothing Then
+
+            @<div Class="col-xs-12 col-sm-12">
+                <div Class="panel panel-default">
+                    <div Class="panel-heading">
+                        <h4 Class="panel-title">Order Info</h4>
+                    </div>
+                    <div Class="panel-body">
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Category</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item2.category_name
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Size description</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.size_description
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Description</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.description
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Quantity</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.quantity
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Note</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.note
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Delivery date</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.delivery_date
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Address</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.address
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Recipient full name </Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.recipient_full_name
+                            </div>
+                        </div>
+                        <div Class="form-group">
+                            <Label Class="col-sm-2 control-label">Phone</Label>
+                            <div Class="col-sm-10" style="margin-top:10px">
+                                @Model.Item1.phone
+                            </div>
+                        </div>
+
+                        @If Not Model.Item1.confirm Then
+                            @Using Html.BeginForm("ConfirmCustomOrder", "Manager")
+                                @Html.AntiForgeryToken()
+                                @<input type="hidden" value="@Model.Item1.id" name="orderId" />
+                                @<div Class="form-group">
+                                    <div Class="col-sm-10 col-sm-offset-2" style="margin-top:10px">
+                                        <Button type="submit" Class="btn btn-danger">Confirm</Button>
+                                    </div>
+                                </div>
+                            End Using
+                        Else
+
+                            If Not Model.Item1.status Then
+                                @<div Class="form-group">
+                                    <img Class="img-account-profile rounded-circle mb-2" src="@Url.Content("~/Uploads/" & Model.Item1.img_product)" width="200" height="200" alt="" style="margin-top:20px">
+                                    <div Class="input-group" style="margin-top:20px">
+                                        @Using Html.BeginForm("UploadImageCutomOrder", "Manager", FormMethod.Post, New With {.enctype = "multipart/form-data"})
+                                            @Html.AntiForgeryToken()
+                                            @<input type="hidden" name="orderId" value="@Model.Item1.id" />
+                                            @<input type="submit" value="Upload" Class="btn btn-outline-secondary" />
+                                            @<input type="file" name="file" Class="form-control" />
+                                            @Code
+                                                Dim imageUpload = TempData("imageUpload")
+                                            End Code
+                                            @If imageUpload IsNot Nothing Then
+                                                @<p style="color:red; margin: 10px 0 0 0">
+                                                    @imageUpload
+                                                </p>
+                                            End If
+                                        End Using
+                                    </div>
+                                </div>
+                                @Using Html.BeginForm("CustomOrderSuccess", "Manager")
+                                    @Html.AntiForgeryToken()
+                                    @<input type="hidden" value="@Model.Item1.id" name="orderId" />
+                                    @<div Class="form-group">
+                                        <Label Class="col-sm-2 control-label">Total price</Label>
+                                        <div Class="col-sm-10" style="margin-top:10px">
+                                            <input type="number" value="0" class="form-control" name="totalPrice" />
+                                        </div>
+                                    </div>
+                                    @<div Class="form-group">
+                                        <div Class="col-sm-10 col-sm-offset-2" style="margin-top:10px">
+                                            <Button type="submit" Class="btn btn-success">Success</Button>
+                                        </div>
+                                    </div>
+                                End Using
+                            Else
+                                @<div Class="form-group">
+                                    <Label Class="col-sm-2 control-label">Total price</Label>
+                                    <div Class="col-sm-10" style="margin-top:10px">
+                                        @Model.Item1.total_price
+                                    </div>
+                                </div>
+                                @<div Class="form-group">
+                                    <Label Class="col-sm-2 control-label">Status</Label>
+                                    <div Class="col-sm-10" style="margin-top:10px">
+                                        <span class="btn btn-success">Success</span>
+                                    </div>
+                                </div>
+                                @<div Class="form-group">
+                                    <img Class="img-account-profile rounded-circle mb-2" src="@Url.Content("~/Uploads/" & Model.Item1.img_product)" width="200" height="200" alt="" style="margin-top:20px">
+                                </div>
+                            End If
+                        End If
+                    </div>
+                </div>
+            </div>
+
+        End If
+
+        @Html.ActionLink("Back to list", "CustomOrderPage", "Manager", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
+    </div>
+</div>
+

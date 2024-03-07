@@ -731,8 +731,15 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
-            Dim favoriteList As List(Of favotite) = New List(Of favotite)
-            favoriteList = (From f In db.favotites
+            Dim notifications As List(Of custom_order_notification) = Nothing
+            notifications = (From n In db.custom_order_notification
+                             Where n.user_id = userId And n.status = False
+                             Select n).ToList()
+
+
+
+            Dim favoriteList As List(Of favorite) = New List(Of favorite)
+            favoriteList = (From f In db.favorites
                             Where f.user_id = userId
                             Select f).ToList()
 
@@ -742,6 +749,52 @@ Namespace Controllers
             Dim productDataList As List(Of ProductData) = New List(Of ProductData)
 
             For Each item In products
+                Dim productData As ProductData = New ProductData With {
+                    .product = item,
+                    .isFavorite = False
+                }
+                For Each itemF In favoriteList
+                    If itemF.product_id = item.Id And itemF.status Then
+                        productData.isFavorite = True
+                        Exit For
+                    End If
+                Next
+                productDataList.Add(productData)
+            Next
+
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification))(productDataList, notifications)
+
+            Return View("Product", tupleData)
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function Product(name As String) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+
+            Dim favoriteList As List(Of favorite) = New List(Of favorite)
+            favoriteList = (From f In db.favorites
+                            Where f.user_id = userId
+                            Select f).ToList()
+
+            Dim viewModel As List(Of product) = Nothing
+
+            If String.IsNullOrEmpty(name) Then
+                viewModel = db.products.ToList()
+            Else
+                viewModel = (From p In db.products Where p.product_name.Contains(name)).ToList()
+            End If
+
+            Dim productDataList As List(Of ProductData) = New List(Of ProductData)
+
+            For Each item In viewModel
                 Dim productData As ProductData = New ProductData()
                 productData.product = item
                 productData.isFavorite = False
@@ -755,20 +808,6 @@ Namespace Controllers
             Next
 
             Return View("Product", productDataList)
-        End Function
-
-        <HttpPost()>
-        <ValidateAntiForgeryToken()>
-        Function Product(name As String) As ActionResult
-            Dim viewModel As List(Of product) = Nothing
-
-            If String.IsNullOrEmpty(name) Then
-                viewModel = db.products.ToList()
-            Else
-                viewModel = (From p In db.products Where p.product_name.Contains(name)).ToList()
-            End If
-
-            Return View("Product", viewModel)
         End Function
 
         Function Detail(ByVal id As Integer?) As ActionResult
@@ -973,20 +1012,20 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
-            Dim favoriteResult As favotite = New favotite()
-            favoriteResult = (From f In db.favotites
+            Dim favoriteResult As favorite = New favorite()
+            favoriteResult = (From f In db.favorites
                               Where f.product_id = productId And f.user_id = userId
                               Select f).FirstOrDefault()
 
             If favoriteResult Is Nothing Then
 
-                Dim favoriteRegister As favotite = New favotite With {
+                Dim favoriteRegister As favorite = New favorite With {
                     .product_id = productId,
                     .user_id = userId,
                     .status = True
                 }
 
-                db.favotites.Add(favoriteRegister)
+                db.favorites.Add(favoriteRegister)
                 db.SaveChanges()
             Else
                 If favoriteResult.status Then
@@ -1011,8 +1050,8 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
-            Dim favorites As List(Of favotite) = New List(Of favotite)
-            favorites = (From f In db.favotites
+            Dim favorites As List(Of favorite) = New List(Of favorite)
+            favorites = (From f In db.favorites
                          Where f.user_id = userId And f.status = True
                          Select f).ToList()
 
@@ -1050,8 +1089,8 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
-            Dim favorite As favotite = New favotite()
-            favorite = (From f In db.favotites
+            Dim favorite As favorite = New favorite()
+            favorite = (From f In db.favorites
                         Where f.product_id = productId And f.user_id = userId
                         Select f).FirstOrDefault()
 
@@ -1098,13 +1137,148 @@ Namespace Controllers
             Return View("PurchasedProduct", products)
         End Function
 
+        Function CustomOrder() As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim categories As List(Of category) = New List(Of category)
+            categories = db.categories.ToList()
+
+
+            Return View("CustomOrder", categories)
+        End Function
+
+
+
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function CreateCustomOrder(categoryId As Integer, size As String,
+                                   description As String, quantity As Integer,
+                                   note As String, deliveryDate As DateTime,
+                                   address As String, recipient As String,
+                                   phone As String) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            If size.Length = 0 Then
+                TempData("size") = "Size description is not blank"
+                Return RedirectToAction("CustomOrder")
+            End If
+
+            If description.Length = 0 Then
+                TempData("description") = "Description is not blank"
+                Return RedirectToAction("CustomOrder")
+            End If
+
+            If quantity = 0 Then
+                TempData("quantity") = "Quantity is not blank"
+                Return RedirectToAction("CustomOrder")
+            End If
+
+            If deliveryDate.ToShortDateString().Length < 0 Then
+                TempData("deliveryDate") = "Delivery date is not blank"
+                Return RedirectToAction("CustomOrder")
+            End If
+
+            If address.Length = 0 Then
+                TempData("address") = "Address is not blank"
+                Return RedirectToAction("CustomOrder")
+            End If
+
+            If phone.Length = 0 Then
+                TempData("phone") = "Phone full name is not blank"
+                Return RedirectToAction("CustomOrder")
+            End If
+
+            If recipient.Length = 0 Then
+                Dim user As user = db.users.Find(userId)
+                recipient = user.full_name
+            End If
+
+            Dim customOrder As custom_order = New custom_order With {
+                .category_id = categoryId,
+                .address = address,
+                .delivery_date = deliveryDate,
+                .description = description,
+                .note = note,
+                .phone = phone,
+                .quantity = quantity,
+                .recipient_full_name = recipient,
+                .size_description = size,
+                .status = False,
+                .user_id = userId,
+                .register_time = DateTime.Now(),
+                .confirm = False
+            }
+
+            db.custom_order.Add(customOrder)
+            db.SaveChanges()
+
+
+            Return RedirectToAction("CustomOrderInfo")
+
+        End Function
+
+
+        Function CustomOrderInfo() As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim customOrders As List(Of custom_order) = Nothing
+            customOrders = (From c In db.custom_order
+                            Where c.user_id = userId
+                            Select c).ToList()
+
+
+            Return View("CustomOrderInfo", customOrders)
+        End Function
+
+        Function NotificationInfo(id As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim notifications As List(Of custom_order_notification) = Nothing
+            notifications = (From n In db.custom_order_notification
+                             Where n.user_id = userId
+                             Select n).ToList()
+
+
+
+            Return View("Notification", notifications)
+        End Function
+
+        Function CustomOrderDetailInfo(id As Integer) As ActionResult
+
+            Dim customOrders As custom_order = Nothing
+            customOrders = db.custom_order.Find(id)
+
+            Dim category As category = Nothing
+            category = db.categories.Find(customOrders.category_id)
+
+            Dim tupleData As New Tuple(Of custom_order, category)(customOrders, category)
+
+            Return View("CustomOrderDetail", tupleData)
+        End Function
+
+
     End Class
-
-
-
-
-
-
-
 
 End Namespace

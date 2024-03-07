@@ -22,6 +22,45 @@
     <Property Name="product_id" Type="int" Nullable="false" />
     <Property Name="price" Type="decimal" Precision="18" Scale="0" />
   </EntityType>
+  <EntityType Name="category">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="category_name" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="custom_order">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="category_id" Type="int" Nullable="false" />
+    <Property Name="size_description" Type="nvarchar" MaxLength="2000" Nullable="false" />
+    <Property Name="description" Type="nvarchar" MaxLength="2000" Nullable="false" />
+    <Property Name="quantity" Type="int" Nullable="false" />
+    <Property Name="note" Type="nvarchar" MaxLength="2000" />
+    <Property Name="delivery_date" Type="datetime" Nullable="false" />
+    <Property Name="address" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="recipient_full_name" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="phone" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="status" Type="bit" />
+    <Property Name="user_id" Type="int" />
+    <Property Name="register_time" Type="datetime" />
+    <Property Name="confirm" Type="bit" />
+    <Property Name="img_product" Type="nvarchar" MaxLength="2000" />
+    <Property Name="total_price" Type="decimal" Precision="18" Scale="0" />
+  </EntityType>
+  <EntityType Name="custom_order_notification">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="custom_order_id" Type="int" Nullable="false" />
+    <Property Name="content_notification" Type="nvarchar" MaxLength="2000" Nullable="false" />
+    <Property Name="status" Type="bit" Nullable="false" />
+    <Property Name="register_date" Type="datetime" />
+  </EntityType>
   <EntityType Name="delivery">
     <Key>
       <PropertyRef Name="Id" />
@@ -31,7 +70,7 @@
     <Property Name="phone" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="delivery_date" Type="date" />
   </EntityType>
-  <EntityType Name="favotite">
+  <EntityType Name="favorite">
     <Key>
       <PropertyRef Name="id" />
     </Key>
@@ -75,6 +114,7 @@
     <Property Name="price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
     <Property Name="description" Type="nvarchar" MaxLength="255" />
     <Property Name="is_deleted" Type="bit" />
+    <Property Name="category_id" Type="int" />
   </EntityType>
   <EntityType Name="purchased_product">
     <Key>
@@ -119,8 +159,11 @@
   <EntityContainer Name="DBNetModelStoreContainer">
     <EntitySet Name="cart" EntityType="Self.cart" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="cart_detail" EntityType="Self.cart_detail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="category" EntityType="Self.category" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="custom_order" EntityType="Self.custom_order" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="custom_order_notification" EntityType="Self.custom_order_notification" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="delivery" EntityType="Self.delivery" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="favotite" EntityType="Self.favotite" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="favorite" EntityType="Self.favorite" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order_detail" EntityType="Self.order_detail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="product" EntityType="Self.product" Schema="dbo" store:Type="Tables" />

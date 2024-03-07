@@ -10,10 +10,8 @@
 Imports System
 Imports System.Collections.Generic
 
-Partial Public Class favotite
+Partial Public Class category
     Public Property id As Integer
-    Public Property user_id As Nullable(Of Integer)
-    Public Property product_id As Nullable(Of Integer)
-    Public Property status As Nullable(Of Boolean)
+    Public Property category_name As String
 
 End Class
