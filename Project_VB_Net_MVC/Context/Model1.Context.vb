@@ -31,6 +31,8 @@ Partial Public Class DBNetEntities
     Public Overridable Property favorites() As DbSet(Of favorite)
     Public Overridable Property orders() As DbSet(Of order)
     Public Overridable Property order_detail() As DbSet(Of order_detail)
+    Public Overridable Property posts() As DbSet(Of post)
+    Public Overridable Property post_comment() As DbSet(Of post_comment)
     Public Overridable Property products() As DbSet(Of product)
     Public Overridable Property purchased_product() As DbSet(Of purchased_product)
     Public Overridable Property rates() As DbSet(Of rate)

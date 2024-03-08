@@ -51,6 +51,7 @@ End Code
             </div>
             <div class="navbar-collapse collapse" style="float:right">
                 <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Post", "PostPage", "Users")</li>
                     <li>@Html.ActionLink("Cart Info", "CartInfo", "Users")</li>
                     <li>@Html.ActionLink("Custom Order", "CustomOrder", "Users")</li>
                     <li>@Html.ActionLink("User Info", "UserInfo", "Users")</li>
@@ -59,12 +60,12 @@ End Code
                     <li>@Html.ActionLink("Purchased product", "PurchasedProduct", "Users")</li>
                     <li>
                         @If Model.Item2.Count > 0 Then
-                            @<a href="http://localhost:53005/Users/NotificationInfo/@Model.Item2(0).user_id" style="font-size:25px"><i Class="fa fa-bell" aria-hidden="true"></i></a>
+                            @<a href="http://localhost:53005/Users/NotificationInfo/" style="font-size:25px"><i Class="fa fa-bell" aria-hidden="true"></i></a>
                             @<div Class="circle-button">
                                 <span>@Model.Item2.Count</span>
                             </div>
                         Else
-                            @<a href="" style="font-size:25px"><i Class="fa fa-bell" aria-hidden="true"></i></a>
+                            @<a href="http://localhost:53005/Users/NotificationInfo/" style="font-size:25px"><i Class="fa fa-bell" aria-hidden="true"></i></a>
                         End If
                     </li>
                     <li>@Html.ActionLink("Log out", "Logout", "Users")</li>
@@ -75,31 +76,33 @@ End Code
     <div Class="container bootstrap snipets">
         <h1 Class="text-center text-muted">Product List</h1>
         <div Class="row flow-offset-1">
-            @For Each item In Model.Item1
-                @<div Class="col-xs-6 col-md-4" style="margin-bottom: 10px">
-                    <div Class="product tumbnail thumbnail-3">
-                        <a href="#"><img src="@Url.Content("~/Uploads/" & item.product.image)" width="350" height="280" alt=""></a>
-                        <div Class="caption" style="text-align:center">
-                            <h6>
-                                @Html.ActionLink(item.product.product_name, "Detail", "Users", New With {.id = item.product.Id}, "")
-                            </h6>
-                            <span Class="price sale">$@item.product.price</span>
-                            @Using (Html.BeginForm("AddToCart", "users"))
-                                @Html.AntiForgeryToken()
-                                @<div class="form-inline my-2 my-lg-0" style="margin-bottom:20px;margin-top:10px">
-                                    @Html.TextBox("productId", item.product.Id, htmlAttributes:=New With {.class = "form-control mr-sm-2", .style = "display: none;"})
-                                    <input type="submit" value="Add to cart" class="btn btn-info btn-outline-success my-2 my-sm-0" />
-                                </div>
-                            End Using
-                            @If item.isFavorite Then
-                                @<a href="http://localhost:53005/users/Favorite/?productID=@item.product.Id" Class="btn btn-danger"><i Class="fa fa-heart-o" aria-hidden="true"></i></a>
-                            Else
-                                @<a href="http://localhost:53005/users/Favorite/?productID=@item.product.Id" Class="btn btn-success"><i Class="fa fa-heart-o" aria-hidden="true"></i></a>
-                            End If
+            @If Model IsNot Nothing Then
+                @For Each item In Model.Item1
+                    @<div Class="col-xs-6 col-md-4" style="margin-bottom: 10px">
+                        <div Class="product tumbnail thumbnail-3">
+                            <a href="#"><img src="@Url.Content("~/Uploads/" & item.product.image)" width="350" height="280" alt=""></a>
+                            <div Class="caption" style="text-align:center">
+                                <h6>
+                                    @Html.ActionLink(item.product.product_name, "Detail", "Users", New With {.id = item.product.Id}, "")
+                                </h6>
+                                <span Class="price sale">$@item.product.price</span>
+                                @Using (Html.BeginForm("AddToCart", "users"))
+                                    @Html.AntiForgeryToken()
+                                    @<div class="form-inline my-2 my-lg-0" style="margin-bottom:20px;margin-top:10px">
+                                        @Html.TextBox("productId", item.product.Id, htmlAttributes:=New With {.class = "form-control mr-sm-2", .style = "display: none;"})
+                                        <input type="submit" value="Add to cart" class="btn btn-info btn-outline-success my-2 my-sm-0" />
+                                    </div>
+                                End Using
+                                @If item.isFavorite Then
+                                    @<a href="http://localhost:53005/users/Favorite/?productID=@item.product.Id" Class="btn btn-danger"><i Class="fa fa-heart-o" aria-hidden="true"></i></a>
+                                Else
+                                    @<a href="http://localhost:53005/users/Favorite/?productID=@item.product.Id" Class="btn btn-success"><i Class="fa fa-heart-o" aria-hidden="true"></i></a>
+                                End If
+                            </div>
                         </div>
                     </div>
-                </div>
-            Next
+                Next
+            End If
         </div>
     </div>
 </body>

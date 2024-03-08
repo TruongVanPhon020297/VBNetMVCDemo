@@ -104,6 +104,28 @@
     <Property Name="product_id" Type="int" Nullable="false" />
     <Property Name="price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
   </EntityType>
+  <EntityType Name="post">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="title" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="register_date" Type="date" Nullable="false" />
+    <Property Name="ingredient" Type="nvarchar" MaxLength="4000" Nullable="false" />
+    <Property Name="process" Type="nvarchar" MaxLength="4000" Nullable="false" />
+    <Property Name="image" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="post_content" Type="nvarchar" MaxLength="4000" />
+  </EntityType>
+  <EntityType Name="post_comment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="comment" Type="nvarchar" MaxLength="4000" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="post_id" Type="int" Nullable="false" />
+    <Property Name="register_date" Type="date" Nullable="false" />
+  </EntityType>
   <EntityType Name="product">
     <Key>
       <PropertyRef Name="Id" />
@@ -166,6 +188,8 @@
     <EntitySet Name="favorite" EntityType="Self.favorite" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order_detail" EntityType="Self.order_detail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="post" EntityType="Self.post" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="post_comment" EntityType="Self.post_comment" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="product" EntityType="Self.product" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="purchased_product" EntityType="Self.purchased_product" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="rate" EntityType="Self.rate" Schema="dbo" store:Type="Tables" />

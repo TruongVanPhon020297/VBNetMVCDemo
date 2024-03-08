@@ -104,6 +104,28 @@
     <Property Name="product_id" Type="Int32" Nullable="false" />
     <Property Name="price" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
   </EntityType>
+  <EntityType Name="post">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="register_date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="ingredient" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="process" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="image" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="post_content" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="post_comment">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="comment" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="user_id" Type="Int32" Nullable="false" />
+    <Property Name="post_id" Type="Int32" Nullable="false" />
+    <Property Name="register_date" Type="DateTime" Nullable="false" Precision="0" />
+  </EntityType>
   <EntityType Name="product">
     <Key>
       <PropertyRef Name="Id" />
@@ -166,6 +188,8 @@
     <EntitySet Name="favorites" EntityType="Self.favorite" />
     <EntitySet Name="orders" EntityType="Self.order" />
     <EntitySet Name="order_detail" EntityType="Self.order_detail" />
+    <EntitySet Name="posts" EntityType="Self.post" />
+    <EntitySet Name="post_comment" EntityType="Self.post_comment" />
     <EntitySet Name="products" EntityType="Self.product" />
     <EntitySet Name="purchased_product" EntityType="Self.purchased_product" />
     <EntitySet Name="rates" EntityType="Self.rate" />

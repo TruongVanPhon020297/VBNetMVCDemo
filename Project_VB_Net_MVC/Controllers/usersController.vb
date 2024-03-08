@@ -784,6 +784,11 @@ Namespace Controllers
                             Where f.user_id = userId
                             Select f).ToList()
 
+            Dim notifications As List(Of custom_order_notification) = Nothing
+            notifications = (From n In db.custom_order_notification
+                             Where n.user_id = userId And n.status = False
+                             Select n).ToList()
+
             Dim viewModel As List(Of product) = Nothing
 
             If String.IsNullOrEmpty(name) Then
@@ -807,7 +812,9 @@ Namespace Controllers
                 productDataList.Add(productData)
             Next
 
-            Return View("Product", productDataList)
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification))(productDataList, notifications)
+
+            Return View("Product", tupleData)
         End Function
 
         Function Detail(ByVal id As Integer?) As ActionResult
@@ -1246,7 +1253,7 @@ Namespace Controllers
             Return View("CustomOrderInfo", customOrders)
         End Function
 
-        Function NotificationInfo(id As Integer) As ActionResult
+        Function NotificationInfo() As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
                 Return RedirectToAction("Login")
@@ -1276,6 +1283,111 @@ Namespace Controllers
             Dim tupleData As New Tuple(Of custom_order, category)(customOrders, category)
 
             Return View("CustomOrderDetail", tupleData)
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function ConfirmNotification(notificationId As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim notification As custom_order_notification = Nothing
+            notification = db.custom_order_notification.Find(notificationId)
+
+            notification.status = True
+
+            db.Entry(notification).State = EntityState.Modified
+            db.SaveChanges()
+
+            Return RedirectToAction("NotificationInfo")
+        End Function
+
+        Function DeleteNotification(id As Integer) As ActionResult
+
+            Dim notification As custom_order_notification = Nothing
+            notification = db.custom_order_notification.Find(id)
+
+            db.custom_order_notification.Remove(notification)
+            db.SaveChanges()
+
+            Return RedirectToAction("NotificationInfo")
+
+        End Function
+
+        Function PostPage() As ActionResult
+
+            Dim postList As List(Of post) = Nothing
+            postList = db.posts.ToList()
+
+            Return View("Post", postList)
+        End Function
+
+        Function PostDetail(ByVal id As Integer?) As ActionResult
+
+            Dim post As post = Nothing
+            post = db.posts.Find(id)
+
+            Dim postCommentDataList As List(Of PostCommentData) = New List(Of PostCommentData)
+
+
+            Dim postComments As List(Of post_comment) = Nothing
+
+            postComments = (From p In db.post_comment
+                            Where p.post_id = id
+                            Select p).ToList()
+
+            For Each item In postComments
+
+                Dim user = db.users.Find(item.user_id)
+
+                Dim userInfo = (From u In db.user_info
+                                Where u.user_id = item.user_id
+                                Select u).FirstOrDefault()
+
+                Dim commentData As PostCommentData = New PostCommentData With {
+                    .image = userInfo.image,
+                    .postComment = item,
+                    .userName = user.full_name
+                }
+
+                postCommentDataList.Add(commentData)
+
+            Next
+
+            Dim tupleData As New Tuple(Of List(Of PostCommentData), post)(postCommentDataList, post)
+
+
+            Return View("PostDetail", tupleData)
+        End Function
+
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function CreateComment(content As String, postId As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim postComment As post_comment = New post_comment With {
+                .comment = content,
+                .post_id = postId,
+                .register_date = Date.Now().ToShortDateString(),
+                .user_id = userId
+            }
+
+            db.post_comment.Add(postComment)
+            db.SaveChanges()
+
+            Return RedirectToAction("PostDetail", New With {.id = postId})
         End Function
 
 

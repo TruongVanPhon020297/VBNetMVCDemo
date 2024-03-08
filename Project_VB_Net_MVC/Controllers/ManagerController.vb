@@ -726,6 +726,52 @@ Namespace Controllers
             Return RedirectToAction("CustomOrderDetailPage", New With {.id = orderId})
         End Function
 
+        Function PostPage() As ActionResult
+            Dim postList As List(Of post) = Nothing
+            postList = db.posts.ToList()
+            Return View("~/Views/managers/Post.vbhtml", postList)
+        End Function
+
+        Function CreatePostPage() As ActionResult
+
+
+
+            Return View("~/Views/managers/CreatePost.vbhtml")
+        End Function
+
+        <HttpPost>
+        <ValidateAntiForgeryToken()>
+        Function CreatePost(file As HttpPostedFileBase, title As String, content As String, ingredient As String, process As String) As ActionResult
+
+            If file IsNot Nothing AndAlso file.ContentLength > 0 Then
+                Dim fileName As String = System.IO.Path.GetFileName(file.FileName)
+                Dim path As String = Server.MapPath("~/Uploads/" & fileName)
+                file.SaveAs(path)
+
+                Dim post As post = New post With {
+                    .image = fileName,
+                    .ingredient = ingredient,
+                    .post_content = content,
+                    .process = process,
+                    .register_date = Date.Now().ToShortDateString(),
+                    .title = title
+                }
+
+                db.posts.Add(post)
+                db.SaveChanges()
+
+            End If
+
+            Return RedirectToAction("PostPage")
+        End Function
+
+        Function PostReviewPage(ByVal id As Integer?) As ActionResult
+
+            Dim post As post = Nothing
+            post = db.posts.Find(id)
+
+            Return View("~/Views/managers/PostReview.vbhtml", post)
+        End Function
 
     End Class
 End Namespace

@@ -114,6 +114,30 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="posts">
+      <EntityTypeMapping TypeName="DBNetModel.post">
+        <MappingFragment StoreEntitySet="post">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="register_date" ColumnName="register_date" />
+          <ScalarProperty Name="ingredient" ColumnName="ingredient" />
+          <ScalarProperty Name="process" ColumnName="process" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="post_content" ColumnName="post_content" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="post_comment">
+      <EntityTypeMapping TypeName="DBNetModel.post_comment">
+        <MappingFragment StoreEntitySet="post_comment">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="comment" ColumnName="comment" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="post_id" ColumnName="post_id" />
+          <ScalarProperty Name="register_date" ColumnName="register_date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="products">
       <EntityTypeMapping TypeName="DBNetModel.product">
         <MappingFragment StoreEntitySet="product">

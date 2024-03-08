@@ -217,38 +217,46 @@ End Code
                     <div class="tab-content p-4">
                         <div class="tab-pane active show" id="tasks-tab" role="tabpanel">
                             <h4 class="card-title mb-4">Notifications</h4>
-                            @For Each item In Model
-                                @<div Class="row">
-                                    <div Class="col-xl-12">
-                                        <div Class="task-list-box" id="landing-task">
-                                            <div id="task-item-1">
-                                                <div class="card task-box rounded-3">
-                                                    <div class="card-body">
-                                                        <div class="row align-items-center">
-                                                            <div class="col-xl-3 col-sm-3">
-                                                                <div class="checklist form-check font-size-15">
-                                                                    <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                                    <label class="form-check-label ms-1 task-title" for="customCheck1">
-                                                                        @item.register_date
-                                                                    </label>
-                                                                </div>
-                                                            </div><!-- end col -->
-                                                            <div class="col-xl-9 col-sm-9">
-                                                                <div class="row align-items-center">
-                                                                    <div class="col-xl-9 col-md-9 col-sm-9">
-                                                                        <div class="avatar-group mt-3 mt-xl-0 task-assigne">
-                                                                            @item.content_notification
-                                                                        </div>
-                                                                    </div><!-- end col -->
-                                                                    <div class="col-xl-3 col-md-3 col-sm-3">
-                                                                        <div class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end">
-                                                                            <div>
-                                                                                <a href="http://localhost:53005/Users/CustomOrderDetailInfo/@item.custom_order_id" class="mb-0 text-muted fw-medium" data-bs-toggle="modal" data-bs-target=".bs-example-new-task"><i class="mdi mdi-square-edit-outline font-size-16 align-middle" onclick="editTask('task-item-1')"></i></a>
+                            @using (Html.BeginForm("ConfirmNotification", "Users", FormMethod.Post, htmlAttributes:=New With {.id = "myForm"}))
+                                @Html.AntiForgeryToken()
+                                @For Each item In Model
+                                    @<div Class="row">
+                                        <div Class="col-xl-12">
+                                            <div Class="task-list-box" id="landing-task">
+                                                <div id="task-item-1">
+                                                    <div class="card task-box rounded-3">
+                                                        <div class="card-body">
+                                                            <div class="row align-items-center">
+                                                                <div class="col-xl-3 col-sm-3">
+                                                                    <div class="checklist form-check font-size-15">
+
+                                                                        @If item.status Then
+                                                                            @<input type="checkbox" checked disabled Class="form-check-input">
+                                                                        Else
+                                                                            @<input type = "checkbox" name="notificationId" value="@item.id" onclick="submitForm()" Class="form-check-input">
+                                                                        End If
+                                                                        <label class="form-check-label ms-1 task-title" for="customCheck1">
+                                                                            @item.register_date
+                                                                        </label>
+                                                                    </div>
+                                                                </div><!-- end col -->
+                                                                <div class="col-xl-9 col-sm-9">
+                                                                    <div class="row align-items-center">
+                                                                        <div class="col-xl-9 col-md-9 col-sm-9">
+                                                                            <div class="avatar-group mt-3 mt-xl-0 task-assigne">
+                                                                                @item.content_notification
                                                                             </div>
-                                                                            <div>
-                                                                                <a href="#" class="delete-item" onclick="deleteProjects('task-item-1')">
-                                                                                    <i class="mdi mdi-trash-can-outline align-middle font-size-16 text-danger"></i>
-                                                                                </a>
+                                                                        </div><!-- end col -->
+                                                                        <div class="col-xl-3 col-md-3 col-sm-3">
+                                                                            <div class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end">
+                                                                                <div>
+                                                                                    <a href="http://localhost:53005/Users/CustomOrderDetailInfo/@item.custom_order_id" class="mb-0 text-muted fw-medium" data-bs-toggle="modal" data-bs-target=".bs-example-new-task"><i class="mdi mdi-square-edit-outline font-size-16 align-middle" onclick="editTask('task-item-1')"></i></a>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <a href="http://localhost:53005/Users/DeleteNotification?id=@item.id" class="delete-item" onclick="deleteProjects('task-item-1')">
+                                                                                        <i class="mdi mdi-trash-can-outline align-middle font-size-16 text-danger"></i>
+                                                                                    </a>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -260,8 +268,8 @@ End Code
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            Next
+                                Next
+                            End Using
                         </div>
                     </div>
                 </div>
@@ -271,6 +279,11 @@ End Code
     <div Class="float-right" style="margin-top:10px">
         @Html.ActionLink("Back to shopping", "Product", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
     </div>
+    <script type="text/javascript">
+        function submitForm() {
+            document.getElementById("myForm").submit();
+        }
+    </script>
 </body>
 </html>
 
