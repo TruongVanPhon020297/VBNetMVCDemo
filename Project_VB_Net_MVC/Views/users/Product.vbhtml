@@ -1,4 +1,4 @@
-﻿@ModelType Tuple(Of List(Of ProductData), List(Of custom_order_notification))
+﻿@ModelType Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))
 
 @Code
     ViewData("Title") = "Product"
@@ -72,6 +72,35 @@ End Code
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="container mt-5">
+        <h2 class="mb-4">Product Filter</h2>
+        @Using (Html.BeginForm("FilterProduct", "users"))
+            @Html.AntiForgeryToken()
+            @<div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="productName">Product Name</label>
+                    <input type="text" class="form-control" id="productName" name="productName" placeholder="Enter product name">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="productType">Categories</label>
+                    <select id="productType" name="category" class="form-control">
+                        @For Each item In Model.Item3
+                            @<option value="@item.id">@item.category_name</option>
+                        Next
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="minPrice">Min Price</label>
+                    <input type="number" class="form-control" name="minPrice" value="0" id="minPrice" placeholder="Min price">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="maxPrice">Max Price</label>
+                    <input type="number" class="form-control" name="maxPrice" value="10000" id="maxPrice" placeholder="Max price">
+                </div>
+            </div>
+            @<button type="submit" Class="btn btn-primary">Filter</button>
+        End Using
     </div>
     <div Class="container bootstrap snipets">
         <h1 Class="text-center text-muted">Product List</h1>

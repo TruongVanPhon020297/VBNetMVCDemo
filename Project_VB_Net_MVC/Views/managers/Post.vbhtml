@@ -1,4 +1,4 @@
-﻿@ModelType List(Of post)
+﻿@ModelType List(Of PostData)
 
 @Code
     ViewData("Title") = "Post"
@@ -158,16 +158,16 @@ End Code
                                                         @<div Class="card">
                                                             <div Class="comment-widgets m-b-20">
                                                                 <div Class="d-flex flex-row comment-row">
-                                                                    <div Class="p-2"><span class="round"><img src="@Url.Content("~/Uploads/" & item.image)" alt="user" width="50"></span></div>
+                                                                    <div Class="p-2"><span class="round"><img src="@Url.Content("~/Uploads/" & item.post.image)" alt="user" width="50"></span></div>
                                                                     <div Class="comment-text w-100">
-                                                                        @Html.ActionLink(item.title, "PostReviewPage", "Manager", New With {.id = item.id}, "")
+                                                                        @Html.ActionLink(item.post.title, "PostReviewPage", "Manager", New With {.id = item.post.id}, "")
                                                                         <div Class="comment-footer">
-                                                                            <span Class="date">@item.register_date</span>
+                                                                            <span Class="date">@item.post.register_date</span>
                                                                             <span Class="action-icons">
-                                                                                <a href="#" data-abc="true"><i Class="fa fa-comment-o" aria-hidden="true"></i> 100</a>
+                                                                                <a href="#" data-abc="true"><i Class="fa fa-comment-o" aria-hidden="true"></i> @item.commentTotal</a>
                                                                             </span>
                                                                         </div>
-                                                                        <p Class="m-b-5 m-t-10">@item.post_content</p>
+                                                                        <p Class="m-b-5 m-t-10">@item.post.post_content</p>
                                                                     </div>
                                                                 </div>
                                                             </div>

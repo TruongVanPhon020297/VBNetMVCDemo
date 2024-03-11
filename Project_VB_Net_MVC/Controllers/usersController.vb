@@ -762,7 +762,11 @@ Namespace Controllers
                 productDataList.Add(productData)
             Next
 
-            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification))(productDataList, notifications)
+            Dim categories As List(Of category) = Nothing
+            categories = db.categories.ToList()
+
+
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))(productDataList, notifications, categories)
 
             Return View("Product", tupleData)
         End Function
@@ -812,7 +816,11 @@ Namespace Controllers
                 productDataList.Add(productData)
             Next
 
-            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification))(productDataList, notifications)
+            Dim categories As List(Of category) = Nothing
+            categories = db.categories.ToList()
+
+
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))(productDataList, notifications, categories)
 
             Return View("Product", tupleData)
         End Function
@@ -1321,10 +1329,27 @@ Namespace Controllers
 
         Function PostPage() As ActionResult
 
+            Dim postDataList As List(Of PostData) = New List(Of PostData)
+
             Dim postList As List(Of post) = Nothing
             postList = db.posts.ToList()
 
-            Return View("Post", postList)
+            For Each item In postList
+
+                Dim postCommentList As List(Of post_comment) = (From p In db.post_comment
+                                                                Where p.post_id = item.id
+                                                                Select p).ToList()
+
+                Dim postData As PostData = New PostData With {
+                    .post = item,
+                    .commentTotal = postCommentList.Count()
+                }
+
+                postDataList.Add(postData)
+
+            Next
+
+            Return View("Post", postDataList)
         End Function
 
         Function PostDetail(ByVal id As Integer?) As ActionResult
@@ -1390,6 +1415,60 @@ Namespace Controllers
             Return RedirectToAction("PostDetail", New With {.id = postId})
         End Function
 
+        Function FilterProduct(productName As String, category As String, minPrice As Integer, maxPrice As Integer) As ActionResult
+            Dim products As List(Of product) = Nothing
+            products = db.products.ToList()
+
+            Dim filteredProducts As List(Of product) = products.Where(Function(p) _
+                (String.IsNullOrEmpty(productName) OrElse p.product_name.Contains(productName)) AndAlso
+                (String.IsNullOrEmpty(category) OrElse p.category_id = category) AndAlso
+                (p.price >= minPrice AndAlso p.price <= maxPrice)
+            ).ToList()
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim notifications As List(Of custom_order_notification) = Nothing
+            notifications = (From n In db.custom_order_notification
+                             Where n.user_id = userId And n.status = False
+                             Select n).ToList()
+
+
+
+            Dim favoriteList As List(Of favorite) = New List(Of favorite)
+            favoriteList = (From f In db.favorites
+                            Where f.user_id = userId
+                            Select f).ToList()
+
+            Dim productDataList As List(Of ProductData) = New List(Of ProductData)
+
+            For Each item In filteredProducts
+                Dim productData As ProductData = New ProductData With {
+                    .product = item,
+                    .isFavorite = False
+                }
+                For Each itemF In favoriteList
+                    If itemF.product_id = item.Id And itemF.status Then
+                        productData.isFavorite = True
+                        Exit For
+                    End If
+                Next
+                productDataList.Add(productData)
+            Next
+
+            Dim categories As List(Of category) = Nothing
+            categories = db.categories.ToList()
+
+
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))(productDataList, notifications, categories)
+
+            Return View("Product", tupleData)
+
+        End Function
 
     End Class
 

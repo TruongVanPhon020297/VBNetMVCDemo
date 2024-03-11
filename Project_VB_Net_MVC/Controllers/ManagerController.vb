@@ -727,14 +727,29 @@ Namespace Controllers
         End Function
 
         Function PostPage() As ActionResult
+            Dim postDataList As List(Of PostData) = New List(Of PostData)
+
             Dim postList As List(Of post) = Nothing
             postList = db.posts.ToList()
-            Return View("~/Views/managers/Post.vbhtml", postList)
+
+            For Each item In postList
+
+                Dim postCommentList As List(Of post_comment) = (From p In db.post_comment
+                                                                Where p.post_id = item.id
+                                                                Select p).ToList()
+
+                Dim postData As PostData = New PostData With {
+                    .post = item,
+                    .commentTotal = postCommentList.Count()
+                }
+
+                postDataList.Add(postData)
+
+            Next
+            Return View("~/Views/managers/Post.vbhtml", postDataList)
         End Function
 
         Function CreatePostPage() As ActionResult
-
-
 
             Return View("~/Views/managers/CreatePost.vbhtml")
         End Function

@@ -227,6 +227,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\PostCommentData.vb" />
+    <Compile Include="Models\PostData.vb" />
     <Compile Include="Models\ProductData.vb" />
     <Compile Include="Models\RateData.vb" />
     <Compile Include="Models\RateInfo.vb" />
