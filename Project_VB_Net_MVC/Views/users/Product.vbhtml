@@ -85,6 +85,7 @@ End Code
                 <div class="form-group col-md-4">
                     <label for="productType">Categories</label>
                     <select id="productType" name="category" class="form-control">
+                        <option value="">All</option>
                         @For Each item In Model.Item3
                             @<option value="@item.id">@item.category_name</option>
                         Next

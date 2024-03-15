@@ -25,8 +25,8 @@ Namespace Controllers
         <ActionName("Register")>
         <ValidateAntiForgeryToken()>
         Function Create(<Bind(Include:="id,full_name,password,email")> ByVal user As user) As ActionResult
-            If ModelState.IsValid Then
 
+            If ModelState.IsValid Then
                 If user.full_name Is Nothing Then
                     TempData("fullName") = "Full name is not blank"
                     Return RedirectToAction("Register")
@@ -56,14 +56,17 @@ Namespace Controllers
                         .user_id = userResult.id,
                         .image = "avartar.png"
                     }
+
                     db.user_info.Add(userInfo)
                     db.SaveChanges()
+
                     Return RedirectToAction("Login")
                 Else
                     TempData("email") = "Email Exists"
                     Return RedirectToAction("Register")
                 End If
             End If
+
             Return RedirectToAction("Register")
         End Function
 
@@ -97,6 +100,7 @@ Namespace Controllers
 
             Dim viewModel As user = Nothing
             viewModel = (From u In db.users Where u.email.Equals(email) And u.password.Equals(password)).FirstOrDefault()
+
             If viewModel IsNot Nothing Then
                 If viewModel.manager Then
                     Dim aCookie As New HttpCookie("Manager") With {
@@ -129,6 +133,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userCookie = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userCookie.Value)
 
@@ -157,7 +172,18 @@ Namespace Controllers
         <ValidateAntiForgeryToken()>
         Function UpdateInfoUser(address As String, phone As String, birthday As Date) As ActionResult
 
-            If Request.Cookies("UserName") Is Nothing And Request.Cookies("Manager") Is Nothing Then
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
                 Return RedirectToAction("Login")
             End If
             Dim userInfo = Request.Cookies("UserName")
@@ -218,7 +244,18 @@ Namespace Controllers
         <HttpPost>
         Function Upload(file As HttpPostedFileBase) As ActionResult
 
-            If Request.Cookies("UserName") Is Nothing And Request.Cookies("Manager") Is Nothing Then
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
                 Return RedirectToAction("Login")
             End If
             Dim userCookie = Request.Cookies("UserName")
@@ -267,6 +304,21 @@ Namespace Controllers
         <HttpPost()>
         <ValidateAntiForgeryToken()>
         Function RemoveDetail(detailId As String) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim userInfo = Request.Cookies("UserName")
             Dim userId As Integer
@@ -329,6 +381,21 @@ Namespace Controllers
         <HttpPost()>
         <ValidateAntiForgeryToken()>
         Function AddToCart(productId As String) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
@@ -407,6 +474,21 @@ Namespace Controllers
         <ValidateAntiForgeryToken()>
         Function Increament(detailId As String) As ActionResult
 
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
 
             Dim userId As Integer
@@ -463,6 +545,21 @@ Namespace Controllers
         <ValidateAntiForgeryToken()>
         Function Decreament(detailId As String) As ActionResult
 
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId As Integer
 
@@ -517,6 +614,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -543,6 +651,21 @@ Namespace Controllers
         <HttpPost()>
         <ValidateAntiForgeryToken()>
         Function Checkout(cartId As String, address As String, phone As String) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
@@ -648,6 +771,21 @@ Namespace Controllers
         <ValidateAntiForgeryToken()>
         Function AddToCartWithQuantity(quantity As Integer, productId As Integer) As ActionResult
 
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
             Dim cart As cart = Nothing
@@ -728,6 +866,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -779,6 +928,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -826,6 +986,22 @@ Namespace Controllers
         End Function
 
         Function Detail(ByVal id As Integer?) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim product As product = Nothing
 
             Dim userInfo = Request.Cookies("UserName")
@@ -942,6 +1118,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -955,6 +1142,21 @@ Namespace Controllers
 
 
         Function OrderDetail(ByVal id As Integer?) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim orderDetails As List(Of order_detail) = Nothing
             orderDetails = (From o In db.order_detail Where o.order_id = id).ToList()
@@ -976,6 +1178,17 @@ Namespace Controllers
         Function CancelOrder(orderId As String) As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
                 Return RedirectToAction("Login")
             End If
             Dim userInfo = Request.Cookies("UserName")
@@ -1004,6 +1217,21 @@ Namespace Controllers
         <ValidateAntiForgeryToken()>
         Function CreateRate(rating As Integer, comment As String, productId As Integer) As ActionResult
 
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -1023,6 +1251,21 @@ Namespace Controllers
         End Function
 
         Function Favorite(productId As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
@@ -1059,6 +1302,17 @@ Namespace Controllers
         Function FavoriteInfo() As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
                 Return RedirectToAction("Login")
             End If
 
@@ -1101,6 +1355,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -1123,6 +1388,17 @@ Namespace Controllers
         Function PurchasedProduct() As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
                 Return RedirectToAction("Login")
             End If
 
@@ -1158,6 +1434,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim categories As List(Of category) = New List(Of category)
             categories = db.categories.ToList()
 
@@ -1177,6 +1464,17 @@ Namespace Controllers
                                    phone As String) As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
                 Return RedirectToAction("Login")
             End If
 
@@ -1249,6 +1547,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -1267,6 +1576,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -1281,6 +1601,21 @@ Namespace Controllers
         End Function
 
         Function CustomOrderDetailInfo(id As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim customOrders As custom_order = Nothing
             customOrders = db.custom_order.Find(id)
@@ -1301,6 +1636,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -1317,6 +1663,21 @@ Namespace Controllers
 
         Function DeleteNotification(id As Integer) As ActionResult
 
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim notification As custom_order_notification = Nothing
             notification = db.custom_order_notification.Find(id)
 
@@ -1328,6 +1689,21 @@ Namespace Controllers
         End Function
 
         Function PostPage() As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim postDataList As List(Of PostData) = New List(Of PostData)
 
@@ -1353,6 +1729,21 @@ Namespace Controllers
         End Function
 
         Function PostDetail(ByVal id As Integer?) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
 
             Dim post As post = Nothing
             post = db.posts.Find(id)
@@ -1399,6 +1790,17 @@ Namespace Controllers
                 Return RedirectToAction("Login")
             End If
 
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
@@ -1416,6 +1818,22 @@ Namespace Controllers
         End Function
 
         Function FilterProduct(productName As String, category As String, minPrice As Integer, maxPrice As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
             Dim products As List(Of product) = Nothing
             products = db.products.ToList()
 
@@ -1424,10 +1842,6 @@ Namespace Controllers
                 (String.IsNullOrEmpty(category) OrElse p.category_id = category) AndAlso
                 (p.price >= minPrice AndAlso p.price <= maxPrice)
             ).ToList()
-
-            If Request.Cookies("UserName") Is Nothing Then
-                Return RedirectToAction("Login")
-            End If
 
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
@@ -1470,6 +1884,25 @@ Namespace Controllers
 
         End Function
 
-    End Class
 
+        Function CheckUserLogin() As Boolean
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim userData As user = Nothing
+
+            userData = (From u In db.users
+                        Where u.id = userId And u.manager = False
+                        Select u).FirstOrDefault()
+
+            If userData Is Nothing Then
+                Return False
+            End If
+
+            Return True
+        End Function
+
+
+    End Class
 End Namespace

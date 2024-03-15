@@ -13,9 +13,10 @@ Imports System.Collections.Generic
 Partial Public Class custom_order_notification
     Public Property id As Integer
     Public Property user_id As Integer
-    Public Property custom_order_id As Integer
+    Public Property order_id As Integer
     Public Property content_notification As String
     Public Property status As Boolean
     Public Property register_date As Nullable(Of Date)
+    Public Property is_custom_order As Nullable(Of Boolean)
 
 End Class

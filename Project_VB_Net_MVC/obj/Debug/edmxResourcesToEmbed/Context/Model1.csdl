@@ -56,10 +56,11 @@
     </Key>
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="user_id" Type="Int32" Nullable="false" />
-    <Property Name="custom_order_id" Type="Int32" Nullable="false" />
+    <Property Name="order_id" Type="Int32" Nullable="false" />
     <Property Name="content_notification" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="status" Type="Boolean" Nullable="false" />
     <Property Name="register_date" Type="DateTime" Precision="3" />
+    <Property Name="is_custom_order" Type="Boolean" />
   </EntityType>
   <EntityType Name="delivery">
     <Key>

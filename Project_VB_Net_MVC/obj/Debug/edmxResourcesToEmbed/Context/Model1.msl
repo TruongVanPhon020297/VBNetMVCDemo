@@ -60,10 +60,11 @@
         <MappingFragment StoreEntitySet="custom_order_notification">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="user_id" ColumnName="user_id" />
-          <ScalarProperty Name="custom_order_id" ColumnName="custom_order_id" />
+          <ScalarProperty Name="order_id" ColumnName="order_id" />
           <ScalarProperty Name="content_notification" ColumnName="content_notification" />
           <ScalarProperty Name="status" ColumnName="status" />
           <ScalarProperty Name="register_date" ColumnName="register_date" />
+          <ScalarProperty Name="is_custom_order" ColumnName="is_custom_order" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

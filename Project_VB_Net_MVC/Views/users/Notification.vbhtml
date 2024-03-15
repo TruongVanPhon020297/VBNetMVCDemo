@@ -233,7 +233,7 @@ End Code
                                                                         @If item.status Then
                                                                             @<input type="checkbox" checked disabled Class="form-check-input">
                                                                         Else
-                                                                            @<input type = "checkbox" name="notificationId" value="@item.id" onclick="submitForm()" Class="form-check-input">
+                                                                            @<input type="checkbox" name="notificationId" value="@item.id" onclick="submitForm()" Class="form-check-input">
                                                                         End If
                                                                         <label class="form-check-label ms-1 task-title" for="customCheck1">
                                                                             @item.register_date
@@ -249,12 +249,20 @@ End Code
                                                                         </div><!-- end col -->
                                                                         <div class="col-xl-3 col-md-3 col-sm-3">
                                                                             <div class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end">
+                                                                                @If item.is_custom_order Then
+                                                                                    @<div>
+                                                                                        <a href="http://localhost:53005/Users/CustomOrderDetailInfo/@item.order_id" Class="mb-0 text-muted fw-medium" data-bs-toggle="modal" data-bs-target=".bs-example-new-task"><i Class="mdi mdi-square-edit-outline font-size-16 align-middle" onclick="editTask('task-item-1')"></i></a>
+                                                                                    </div>
+                                                                                Else
+                                                                                    @<div>
+                                                                                        <a href="http://localhost:53005/Users/OrderDetail/@item.order_id" Class="mb-0 text-muted fw-medium" data-bs-toggle="modal" data-bs-target=".bs-example-new-task"><i Class="mdi mdi-square-edit-outline font-size-16 align-middle" onclick="editTask('task-item-1')"></i></a>
+                                                                                    </div>
+                                                                                End If
+
+
                                                                                 <div>
-                                                                                    <a href="http://localhost:53005/Users/CustomOrderDetailInfo/@item.custom_order_id" class="mb-0 text-muted fw-medium" data-bs-toggle="modal" data-bs-target=".bs-example-new-task"><i class="mdi mdi-square-edit-outline font-size-16 align-middle" onclick="editTask('task-item-1')"></i></a>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <a href="http://localhost:53005/Users/DeleteNotification?id=@item.id" class="delete-item" onclick="deleteProjects('task-item-1')">
-                                                                                        <i class="mdi mdi-trash-can-outline align-middle font-size-16 text-danger"></i>
+                                                                                    <a href="http://localhost:53005/Users/DeleteNotification?id=@item.id" Class="delete-item" onclick="deleteProjects('task-item-1')">
+                                                                                        <i Class="mdi mdi-trash-can-outline align-middle font-size-16 text-danger"></i>
                                                                                     </a>
                                                                                 </div>
                                                                             </div>
@@ -276,7 +284,7 @@ End Code
             </div>
         </div>
     </div>
-    <div Class="float-right" style="margin-top:10px">
+    <div Class="float-right" Ifyle="margin-top:10px">
         @Html.ActionLink("Back to shopping", "Product", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
     </div>
     <script type="text/javascript">
