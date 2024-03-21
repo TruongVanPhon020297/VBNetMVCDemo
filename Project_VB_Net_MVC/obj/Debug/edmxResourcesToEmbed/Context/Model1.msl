@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="DBNetModelStoreContainer" CdmEntityContainer="DBNetEntities">
-    <EntitySetMapping Name="carts">
+    <EntitySetMapping Name="cart">
       <EntityTypeMapping TypeName="DBNetModel.cart">
         <MappingFragment StoreEntitySet="cart">
           <ScalarProperty Name="id" ColumnName="id" />
@@ -25,7 +25,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="categories">
+    <EntitySetMapping Name="category">
       <EntityTypeMapping TypeName="DBNetModel.category">
         <MappingFragment StoreEntitySet="category">
           <ScalarProperty Name="id" ColumnName="id" />
@@ -68,7 +68,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="deliveries">
+    <EntitySetMapping Name="delivery">
       <EntityTypeMapping TypeName="DBNetModel.delivery">
         <MappingFragment StoreEntitySet="delivery">
           <ScalarProperty Name="Id" ColumnName="Id" />
@@ -78,7 +78,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="favorites">
+    <EntitySetMapping Name="favorite">
       <EntityTypeMapping TypeName="DBNetModel.favorite">
         <MappingFragment StoreEntitySet="favorite">
           <ScalarProperty Name="id" ColumnName="id" />
@@ -88,7 +88,20 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="orders">
+    <EntitySetMapping Name="notification">
+      <EntityTypeMapping TypeName="DBNetModel.notification">
+        <MappingFragment StoreEntitySet="notification">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="type_of_notification" ColumnName="type_of_notification" />
+          <ScalarProperty Name="type_of_notification_id" ColumnName="type_of_notification_id" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="content_notification" ColumnName="content_notification" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="register_time" ColumnName="register_time" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="order">
       <EntityTypeMapping TypeName="DBNetModel.order">
         <MappingFragment StoreEntitySet="order">
           <ScalarProperty Name="id" ColumnName="id" />
@@ -115,7 +128,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="posts">
+    <EntitySetMapping Name="post">
       <EntityTypeMapping TypeName="DBNetModel.post">
         <MappingFragment StoreEntitySet="post">
           <ScalarProperty Name="id" ColumnName="id" />
@@ -139,7 +152,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="products">
+    <EntitySetMapping Name="product">
       <EntityTypeMapping TypeName="DBNetModel.product">
         <MappingFragment StoreEntitySet="product">
           <ScalarProperty Name="Id" ColumnName="Id" />
@@ -161,7 +174,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="rates">
+    <EntitySetMapping Name="rate">
       <EntityTypeMapping TypeName="DBNetModel.rate">
         <MappingFragment StoreEntitySet="rate">
           <ScalarProperty Name="id" ColumnName="id" />
@@ -173,7 +186,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="users">
+    <EntitySetMapping Name="user">
       <EntityTypeMapping TypeName="DBNetModel.user">
         <MappingFragment StoreEntitySet="user">
           <ScalarProperty Name="id" ColumnName="id" />

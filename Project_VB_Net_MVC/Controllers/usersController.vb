@@ -1,13 +1,4 @@
-﻿Imports System
-Imports System.IO
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.Entity
-Imports System.Linq
-Imports System.Net
-Imports System.Web
-Imports System.Web.Mvc
-Imports Project_VB_Net_MVC
+﻿Imports System.Data.Entity
 
 Namespace Controllers
     Public Class usersController
@@ -38,17 +29,17 @@ Namespace Controllers
                 End If
 
                 Dim userCheck As user = New user()
-                userCheck = (From u In db.users
+                userCheck = (From u In db.user
                              Where u.email = user.email
                              Select u).FirstOrDefault()
 
                 If userCheck Is Nothing Then
                     user.manager = False
-                    db.users.Add(user)
+                    db.user.Add(user)
                     db.SaveChanges()
 
                     Dim userResult As user = New user()
-                    userResult = (From u In db.users
+                    userResult = (From u In db.user
                                   Where u.email = user.email
                                   Select u).FirstOrDefault()
 
@@ -99,7 +90,7 @@ Namespace Controllers
             End If
 
             Dim viewModel As user = Nothing
-            viewModel = (From u In db.users Where u.email.Equals(email) And u.password.Equals(password)).FirstOrDefault()
+            viewModel = (From u In db.user Where u.email.Equals(email) And u.password.Equals(password)).FirstOrDefault()
 
             If viewModel IsNot Nothing Then
                 If viewModel.manager Then
@@ -147,7 +138,7 @@ Namespace Controllers
             Dim userCookie = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userCookie.Value)
 
-            Dim user As user = db.users.Find(userId)
+            Dim user As user = db.user.Find(userId)
 
             Dim userInfoData As user_info = New user_info()
             userInfoData = (From u In db.user_info
@@ -222,7 +213,7 @@ Namespace Controllers
                 End If
             End If
 
-            Dim user As user = db.users.Find(userId)
+            Dim user As user = db.user.Find(userId)
 
             Dim userInfoData As user_info = New user_info()
             userInfoData = (From u In db.user_info
@@ -332,7 +323,7 @@ Namespace Controllers
 
             Dim cart As cart = Nothing
 
-            cart = (From c In db.carts
+            cart = (From c In db.cart
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
@@ -355,7 +346,7 @@ Namespace Controllers
                 End If
 
                 If cart.quantity = 1 Or cartDetails.Count = 1 Then
-                    db.carts.Remove(cart)
+                    db.cart.Remove(cart)
                     db.SaveChanges()
                     If userInfo Is Nothing Then
                         Return RedirectToAction("CreateCart", "Manager")
@@ -400,27 +391,27 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
             Dim cart As cart = Nothing
-            cart = (From c In db.carts
+            cart = (From c In db.cart
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
 
             Dim cartRegister As cart = New cart()
 
-            Dim product As product = db.products.Find(Convert.ToDecimal(productId))
+            Dim product As product = db.product.Find(Convert.ToDecimal(productId))
 
             If IsNothing(cart) Then
 
                 cartRegister.user_id = userId
                 cartRegister.quantity = 1
                 cartRegister.total_price = product.price
-                db.carts.Add(cartRegister)
+                db.cart.Add(cartRegister)
                 db.SaveChanges()
 
 
                 Dim cartResult As List(Of cart) = Nothing
 
-                cartResult = (From p In db.carts
+                cartResult = (From p In db.cart
                               Where p.user_id = userId
                               Select p).ToList()
 
@@ -503,7 +494,7 @@ Namespace Controllers
 
             Dim cart As cart = Nothing
 
-            cart = (From c In db.carts
+            cart = (From c In db.cart
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
@@ -572,7 +563,7 @@ Namespace Controllers
 
             Dim cart As cart = Nothing
 
-            cart = (From c In db.carts
+            cart = (From c In db.cart
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
@@ -631,7 +622,7 @@ Namespace Controllers
             Dim cartDetails As List(Of cart_detail) = Nothing
             Dim cart As cart = Nothing
 
-            cart = (From c In db.carts
+            cart = (From c In db.cart
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
@@ -682,7 +673,7 @@ Namespace Controllers
 
             Dim cart As cart = Nothing
 
-            cart = (From c In db.carts
+            cart = (From c In db.cart
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
@@ -691,20 +682,20 @@ Namespace Controllers
                 .phone = phone
             }
 
-            db.deliveries.Add(delivery)
+            db.delivery.Add(delivery)
             db.SaveChanges()
 
             Dim deliveryResult As delivery = Nothing
-            deliveryResult = (From d In db.deliveries
+            deliveryResult = (From d In db.delivery
                               Order By d.Id Descending
                               Select d).FirstOrDefault()
 
             Dim orderRegister = ToOrder(cart)
             orderRegister.delivery_id = deliveryResult.Id
 
-            db.orders.Add(orderRegister)
+            db.order.Add(orderRegister)
             db.SaveChanges()
-            db.carts.Remove(cart)
+            db.cart.Remove(cart)
             db.SaveChanges()
 
             Dim cartDetails As List(Of cart_detail) = Nothing
@@ -714,7 +705,7 @@ Namespace Controllers
                            Select c).ToList()
 
             Dim orderResult As order = Nothing
-            orderResult = (From o In db.orders
+            orderResult = (From o In db.order
                            Where o.user_id = userId
                            Order By o.id Descending
                            Select o).FirstOrDefault()
@@ -789,27 +780,27 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
             Dim cart As cart = Nothing
-            cart = (From c In db.carts
+            cart = (From c In db.cart
                     Where c.user_id = userId
                     Select c).FirstOrDefault()
 
 
             Dim cartRegister As cart = New cart()
 
-            Dim product As product = db.products.Find(productId)
+            Dim product As product = db.product.Find(productId)
 
             If IsNothing(cart) Then
 
                 cartRegister.user_id = userId
                 cartRegister.quantity = quantity
                 cartRegister.total_price = product.price * quantity
-                db.carts.Add(cartRegister)
+                db.cart.Add(cartRegister)
                 db.SaveChanges()
 
 
                 Dim cartResult As List(Of cart) = Nothing
 
-                cartResult = (From p In db.carts
+                cartResult = (From p In db.cart
                               Where p.user_id = userId
                               Select p).ToList()
 
@@ -888,12 +879,12 @@ Namespace Controllers
 
 
             Dim favoriteList As List(Of favorite) = New List(Of favorite)
-            favoriteList = (From f In db.favorites
+            favoriteList = (From f In db.favorite
                             Where f.user_id = userId
                             Select f).ToList()
 
             Dim products As List(Of product) = New List(Of product)
-            products = db.products.ToList()
+            products = db.product.ToList()
 
             Dim productDataList As List(Of ProductData) = New List(Of ProductData)
 
@@ -912,10 +903,17 @@ Namespace Controllers
             Next
 
             Dim categories As List(Of category) = Nothing
-            categories = db.categories.ToList()
+            categories = db.category.ToList()
 
 
-            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))(productDataList, notifications, categories)
+            Dim notificationList As List(Of notification) = New List(Of notification)
+            notificationList = (From n In db.notification
+                                Where n.user_id = userId And n.status = False
+                                Select n).ToList()
+
+            Dim totalNotification As Integer = notifications.Count + notificationList.Count
+
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of category), Integer)(productDataList, categories, totalNotification)
 
             Return View("Product", tupleData)
         End Function
@@ -944,7 +942,7 @@ Namespace Controllers
 
 
             Dim favoriteList As List(Of favorite) = New List(Of favorite)
-            favoriteList = (From f In db.favorites
+            favoriteList = (From f In db.favorite
                             Where f.user_id = userId
                             Select f).ToList()
 
@@ -956,9 +954,9 @@ Namespace Controllers
             Dim viewModel As List(Of product) = Nothing
 
             If String.IsNullOrEmpty(name) Then
-                viewModel = db.products.ToList()
+                viewModel = db.product.ToList()
             Else
-                viewModel = (From p In db.products Where p.product_name.Contains(name)).ToList()
+                viewModel = (From p In db.product Where p.product_name.Contains(name)).ToList()
             End If
 
             Dim productDataList As List(Of ProductData) = New List(Of ProductData)
@@ -977,10 +975,16 @@ Namespace Controllers
             Next
 
             Dim categories As List(Of category) = Nothing
-            categories = db.categories.ToList()
+            categories = db.category.ToList()
 
+            Dim notificationList As List(Of notification) = New List(Of notification)
+            notificationList = (From n In db.notification
+                                Where n.user_id = userId And n.status = False
+                                Select n).ToList()
 
-            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))(productDataList, notifications, categories)
+            Dim totalNotification As Integer = notifications.Count + notificationList.Count
+
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of category), Integer)(productDataList, categories, totalNotification)
 
             Return View("Product", tupleData)
         End Function
@@ -1009,11 +1013,11 @@ Namespace Controllers
 
             Dim rating As rate = New rate()
             Dim rates As List(Of rate) = New List(Of rate)
-            rating = (From r In db.rates
+            rating = (From r In db.rate
                       Where r.user_id = userId And r.product_id = id
                       Select r).FirstOrDefault()
 
-            rates = (From r In db.rates
+            rates = (From r In db.rate
                      Where r.user_id <> userId And r.product_id = id
                      Select r).ToList()
 
@@ -1024,7 +1028,7 @@ Namespace Controllers
                 Dim userData As UserData = New UserData()
                 Dim user As user = New user()
 
-                user = db.users.Find(item.user_id)
+                user = db.user.Find(item.user_id)
                 Dim userInfoData As user_info = New user_info()
                 userInfoData = (From u In db.user_info
                                 Where u.user_id = item.user_id
@@ -1042,36 +1046,36 @@ Namespace Controllers
                 rateListData.Add(rateData)
 
             Next
-            product = db.products.Find(id)
+            product = db.product.Find(id)
 
             Dim rateTotal As RateInfo = New RateInfo()
 
             Dim totalRate As List(Of rate) = New List(Of rate)
-            totalRate = (From r In db.rates
+            totalRate = (From r In db.rate
                          Where r.product_id = id And r.star = 1
                          Select r).ToList()
 
             rateTotal.oneRate = totalRate.Count
 
-            totalRate = (From r In db.rates
+            totalRate = (From r In db.rate
                          Where r.product_id = id And r.star = 2
                          Select r).ToList()
 
             rateTotal.twoRate = totalRate.Count
 
-            totalRate = (From r In db.rates
+            totalRate = (From r In db.rate
                          Where r.product_id = id And r.star = 3
                          Select r).ToList()
 
             rateTotal.threeRate = totalRate.Count
 
-            totalRate = (From r In db.rates
+            totalRate = (From r In db.rate
                          Where r.product_id = id And r.star = 4
                          Select r).ToList()
 
             rateTotal.fourRate = totalRate.Count
 
-            totalRate = (From r In db.rates
+            totalRate = (From r In db.rate
                          Where r.product_id = id And r.star = 5
                          Select r).ToList()
 
@@ -1107,11 +1111,6 @@ Namespace Controllers
             Return RedirectToAction("Login")
         End Function
 
-
-
-
-
-
         Function OrderInfo() As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
@@ -1134,7 +1133,7 @@ Namespace Controllers
 
             Dim orders As List(Of order) = Nothing
 
-            orders = (From o In db.orders
+            orders = (From o In db.order
                       Where o.user_id = userId
                       Select o).ToList()
             Return View("Order", orders)
@@ -1162,10 +1161,10 @@ Namespace Controllers
             orderDetails = (From o In db.order_detail Where o.order_id = id).ToList()
 
             Dim order As order = Nothing
-            order = (From o In db.orders Where o.id = id).FirstOrDefault()
+            order = (From o In db.order Where o.id = id).FirstOrDefault()
 
             Dim delivery As delivery = Nothing
-            delivery = (From d In db.deliveries Where d.Id = order.delivery_id).FirstOrDefault()
+            delivery = (From d In db.delivery Where d.Id = order.delivery_id).FirstOrDefault()
 
 
             Dim tupleData As New Tuple(Of List(Of order_detail), delivery, order)(orderDetails, delivery, order)
@@ -1194,8 +1193,8 @@ Namespace Controllers
             Dim userInfo = Request.Cookies("UserName")
             Dim userId = Decimal.Parse(userInfo.Value)
 
-            Dim order As order = db.orders.Find(Decimal.Parse(orderId))
-            db.orders.Remove(order)
+            Dim order As order = db.order.Find(Decimal.Parse(orderId))
+            db.order.Remove(order)
             db.SaveChanges()
 
             Dim orderDetails As List(Of order_detail) = Nothing
@@ -1206,8 +1205,8 @@ Namespace Controllers
             db.SaveChanges()
 
             Dim delivery As delivery = Nothing
-            delivery = db.deliveries.Find(order.delivery_id)
-            db.deliveries.Remove(delivery)
+            delivery = db.delivery.Find(order.delivery_id)
+            db.delivery.Remove(delivery)
             db.SaveChanges()
 
             Return RedirectToAction("OrderInfo")
@@ -1243,7 +1242,7 @@ Namespace Controllers
                 .product_id = productId
             }
 
-            db.rates.Add(rate)
+            db.rate.Add(rate)
             db.SaveChanges()
 
             Return RedirectToAction("Detail", New With {.id = productId})
@@ -1271,7 +1270,7 @@ Namespace Controllers
             Dim userId = Decimal.Parse(userInfo.Value)
 
             Dim favoriteResult As favorite = New favorite()
-            favoriteResult = (From f In db.favorites
+            favoriteResult = (From f In db.favorite
                               Where f.product_id = productId And f.user_id = userId
                               Select f).FirstOrDefault()
 
@@ -1283,7 +1282,7 @@ Namespace Controllers
                     .status = True
                 }
 
-                db.favorites.Add(favoriteRegister)
+                db.favorite.Add(favoriteRegister)
                 db.SaveChanges()
             Else
                 If favoriteResult.status Then
@@ -1320,7 +1319,7 @@ Namespace Controllers
             Dim userId = Decimal.Parse(userInfo.Value)
 
             Dim favorites As List(Of favorite) = New List(Of favorite)
-            favorites = (From f In db.favorites
+            favorites = (From f In db.favorite
                          Where f.user_id = userId And f.status = True
                          Select f).ToList()
 
@@ -1333,7 +1332,7 @@ Namespace Controllers
 
                 For Each item In favorites
                     Dim product As product = New product()
-                    product = (From p In db.products
+                    product = (From p In db.product
                                Where p.Id = item.product_id
                                Select p).FirstOrDefault()
 
@@ -1370,7 +1369,7 @@ Namespace Controllers
             Dim userId = Decimal.Parse(userInfo.Value)
 
             Dim favorite As favorite = New favorite()
-            favorite = (From f In db.favorites
+            favorite = (From f In db.favorite
                         Where f.product_id = productId And f.user_id = userId
                         Select f).FirstOrDefault()
 
@@ -1415,7 +1414,7 @@ Namespace Controllers
 
                 For Each item In purchasedProducts
                     Dim product As product = Nothing
-                    product = db.products.Find(item.product_id)
+                    product = db.product.Find(item.product_id)
 
                     If product IsNot Nothing Then
                         products.Add(product)
@@ -1446,7 +1445,7 @@ Namespace Controllers
             End If
 
             Dim categories As List(Of category) = New List(Of category)
-            categories = db.categories.ToList()
+            categories = db.category.ToList()
 
 
             Return View("CustomOrder", categories)
@@ -1512,7 +1511,7 @@ Namespace Controllers
             End If
 
             If recipient.Length = 0 Then
-                Dim user As user = db.users.Find(userId)
+                Dim user As user = db.user.Find(userId)
                 recipient = user.full_name
             End If
 
@@ -1595,9 +1594,15 @@ Namespace Controllers
                              Where n.user_id = userId
                              Select n).ToList()
 
+            Dim notificationList As List(Of notification) = Nothing
+            notificationList = (From n In db.notification
+                                Where n.user_id = userId
+                                Select n).ToList()
 
+            Dim tupleData As New Tuple(Of List(Of custom_order_notification), List(Of notification))(notifications, notificationList)
 
-            Return View("Notification", notifications)
+            Return View("Notification", tupleData)
+
         End Function
 
         Function CustomOrderDetailInfo(id As Integer) As ActionResult
@@ -1621,7 +1626,7 @@ Namespace Controllers
             customOrders = db.custom_order.Find(id)
 
             Dim category As category = Nothing
-            category = db.categories.Find(customOrders.category_id)
+            category = db.category.Find(customOrders.category_id)
 
             Dim tupleData As New Tuple(Of custom_order, category)(customOrders, category)
 
@@ -1630,7 +1635,7 @@ Namespace Controllers
 
         <HttpPost()>
         <ValidateAntiForgeryToken()>
-        Function ConfirmNotification(notificationId As Integer) As ActionResult
+        Function ConfirmNotificationOrder(notificationId As Integer) As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
                 Return RedirectToAction("Login")
@@ -1661,7 +1666,7 @@ Namespace Controllers
             Return RedirectToAction("NotificationInfo")
         End Function
 
-        Function DeleteNotification(id As Integer) As ActionResult
+        Function DeleteNotificationOrder(id As Integer) As ActionResult
 
             If Request.Cookies("UserName") Is Nothing Then
                 Return RedirectToAction("Login")
@@ -1708,7 +1713,7 @@ Namespace Controllers
             Dim postDataList As List(Of PostData) = New List(Of PostData)
 
             Dim postList As List(Of post) = Nothing
-            postList = db.posts.ToList()
+            postList = db.post.ToList()
 
             For Each item In postList
 
@@ -1746,7 +1751,7 @@ Namespace Controllers
             End If
 
             Dim post As post = Nothing
-            post = db.posts.Find(id)
+            post = db.post.Find(id)
 
             Dim postCommentDataList As List(Of PostCommentData) = New List(Of PostCommentData)
 
@@ -1759,7 +1764,7 @@ Namespace Controllers
 
             For Each item In postComments
 
-                Dim user = db.users.Find(item.user_id)
+                Dim user = db.user.Find(item.user_id)
 
                 Dim userInfo = (From u In db.user_info
                                 Where u.user_id = item.user_id
@@ -1835,7 +1840,7 @@ Namespace Controllers
             End If
 
             Dim products As List(Of product) = Nothing
-            products = db.products.ToList()
+            products = db.product.ToList()
 
             Dim filteredProducts As List(Of product) = products.Where(Function(p) _
                 (String.IsNullOrEmpty(productName) OrElse p.product_name.Contains(productName)) AndAlso
@@ -1854,7 +1859,7 @@ Namespace Controllers
 
 
             Dim favoriteList As List(Of favorite) = New List(Of favorite)
-            favoriteList = (From f In db.favorites
+            favoriteList = (From f In db.favorite
                             Where f.user_id = userId
                             Select f).ToList()
 
@@ -1875,10 +1880,17 @@ Namespace Controllers
             Next
 
             Dim categories As List(Of category) = Nothing
-            categories = db.categories.ToList()
+            categories = db.category.ToList()
 
 
-            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))(productDataList, notifications, categories)
+            Dim notificationList As List(Of notification) = New List(Of notification)
+            notificationList = (From n In db.notification
+                                Where n.user_id = userId And n.status = False
+                                Select n).ToList()
+
+            Dim totalNotification As Integer = notifications.Count + notificationList.Count
+
+            Dim tupleData As New Tuple(Of List(Of ProductData), List(Of category), Integer)(productDataList, categories, totalNotification)
 
             Return View("Product", tupleData)
 
@@ -1892,7 +1904,7 @@ Namespace Controllers
 
             Dim userData As user = Nothing
 
-            userData = (From u In db.users
+            userData = (From u In db.user
                         Where u.id = userId And u.manager = False
                         Select u).FirstOrDefault()
 
@@ -1903,6 +1915,65 @@ Namespace Controllers
             Return True
         End Function
 
+        Function DeleteNotification(id As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
+            Dim notification As notification = Nothing
+            notification = db.notification.Find(id)
+
+            db.notification.Remove(notification)
+            db.SaveChanges()
+
+            Return RedirectToAction("NotificationInfo")
+
+        End Function
+
+        <HttpPost()>
+        <ValidateAntiForgeryToken()>
+        Function ConfirmNotification(notificationId As Integer) As ActionResult
+
+            If Request.Cookies("UserName") Is Nothing Then
+                Return RedirectToAction("Login")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("UserName") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login")
+            End If
+
+            Dim userInfo = Request.Cookies("UserName")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim notification As notification = Nothing
+            notification = db.notification.Find(notificationId)
+
+            notification.status = True
+
+            db.Entry(notification).State = EntityState.Modified
+            db.SaveChanges()
+
+            Return RedirectToAction("NotificationInfo")
+        End Function
 
     End Class
 End Namespace

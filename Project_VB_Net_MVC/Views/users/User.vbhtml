@@ -76,17 +76,16 @@ End Code
                                 </div>
                             </div>
                             @<div Class="row gx-3 mb-3">
-                                 <div Class="col-md-6">
-                                     <Label Class="small mb-1" for="inputBirthday">Birthday</Label>
-                                     @If userInfo.birth_day IsNot Nothing Then
-                                         @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="@userInfo.birth_day.Value.ToShortDateString()">
-                                     Else
-                                         @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="@Date.Now().ToShortDateString()">
-                                     End If
-
-                                 </div>
+                                <div Class="col-md-6">
+                                    <Label Class="small mb-1" for="inputBirthday">Birthday</Label>
+                                    @If userInfo.birth_day IsNot Nothing Then
+                                        @<input Class="form-control" id="inputBirthday" type="date"  name="birthday" value="@userInfo.birth_day.Value.ToString("MM/dd/yyyy")">
+                                    Else
+                                        @<input Class="form-control" id="inputBirthday" type="date" name="birthday" value="@Date.Now().ToString("MM/dd/yyyy")">
+                                    End If
+                                </div>
                             </div>
-                                        End Using
+                        End Using
                     </div>
                 </div>
             </div>

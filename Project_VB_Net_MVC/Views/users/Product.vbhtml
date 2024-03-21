@@ -1,4 +1,4 @@
-﻿@ModelType Tuple(Of List(Of ProductData), List(Of custom_order_notification), List(Of category))
+﻿@ModelType Tuple(Of List(Of ProductData), List(Of category), Integer)
 
 @Code
     ViewData("Title") = "Product"
@@ -59,10 +59,10 @@ End Code
                     <li>@Html.ActionLink("Favorite", "FavoriteInfo", "Users")</li>
                     <li>@Html.ActionLink("Purchased product", "PurchasedProduct", "Users")</li>
                     <li>
-                        @If Model.Item2.Count > 0 Then
+                        @If Model.Item3 > 0 Then
                             @<a href="http://localhost:53005/Users/NotificationInfo/" style="font-size:25px"><i Class="fa fa-bell" aria-hidden="true"></i></a>
                             @<div Class="circle-button">
-                                <span>@Model.Item2.Count</span>
+                                <span>@Model.Item3</span>
                             </div>
                         Else
                             @<a href="http://localhost:53005/Users/NotificationInfo/" style="font-size:25px"><i Class="fa fa-bell" aria-hidden="true"></i></a>
@@ -86,7 +86,7 @@ End Code
                     <label for="productType">Categories</label>
                     <select id="productType" name="category" class="form-control">
                         <option value="">All</option>
-                        @For Each item In Model.Item3
+                        @For Each item In Model.Item2
                             @<option value="@item.id">@item.category_name</option>
                         Next
                     </select>

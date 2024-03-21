@@ -1,4 +1,4 @@
-﻿@ModelType List(Of custom_order_notification)
+﻿@ModelType Tuple(Of List(Of custom_order_notification), List(Of notification))
 
 @Code
     ViewData("Title") = "Notification"
@@ -217,9 +217,9 @@ End Code
                     <div class="tab-content p-4">
                         <div class="tab-pane active show" id="tasks-tab" role="tabpanel">
                             <h4 class="card-title mb-4">Notifications</h4>
-                            @using (Html.BeginForm("ConfirmNotification", "Users", FormMethod.Post, htmlAttributes:=New With {.id = "myForm"}))
+                            @using (Html.BeginForm("ConfirmNotificationOrder", "Users", FormMethod.Post, htmlAttributes:=New With {.id = "myForm"}))
                                 @Html.AntiForgeryToken()
-                                @For Each item In Model
+                                @For Each item In Model.Item1
                                     @<div Class="row">
                                         <div Class="col-xl-12">
                                             <div Class="task-list-box" id="landing-task">
@@ -261,6 +261,67 @@ End Code
 
 
                                                                                 <div>
+                                                                                    <a href="http://localhost:53005/Users/DeleteNotificationOrder?id=@item.id" Class="delete-item" onclick="deleteProjects('task-item-1')">
+                                                                                        <i Class="mdi mdi-trash-can-outline align-middle font-size-16 text-danger"></i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                Next
+                            End Using
+                            @using (Html.BeginForm("ConfirmNotification", "Users", FormMethod.Post, htmlAttributes:=New With {.id = "myFormNotification"}))
+                                @Html.AntiForgeryToken()
+                                @For Each item In Model.Item2
+                                    @<div Class="row">
+                                        <div Class="col-xl-12">
+                                            <div Class="task-list-box" id="landing-task">
+                                                <div id="task-item-1">
+                                                    <div class="card task-box rounded-3">
+                                                        <div class="card-body">
+                                                            <div class="row align-items-center">
+                                                                <div class="col-xl-3 col-sm-3">
+                                                                    <div class="checklist form-check font-size-15">
+
+                                                                        @If item.status Then
+                                                                            @<input type="checkbox" checked disabled Class="form-check-input">
+                                                                        Else
+                                                                            @<input type="checkbox" name="notificationId" value="@item.id" onclick="submitNotification()" Class="form-check-input">
+                                                                        End If
+                                                                        <label class="form-check-label ms-1 task-title" for="customCheck1">
+                                                                            @item.register_time
+                                                                        </label>
+                                                                    </div>
+                                                                </div><!-- end col -->
+                                                                <div class="col-xl-9 col-sm-9">
+                                                                    <div class="row align-items-center">
+                                                                        <div class="col-xl-9 col-md-9 col-sm-9">
+                                                                            <div class="avatar-group mt-3 mt-xl-0 task-assigne">
+                                                                                @item.content_notification
+                                                                            </div>
+                                                                        </div><!-- end col -->
+                                                                        <div class="col-xl-3 col-md-3 col-sm-3">
+                                                                            <div class="d-flex flex-wrap gap-3 mt-3 mt-xl-0 justify-content-md-end">
+                                                                                @If item.type_of_notification = 1 Then
+                                                                                    @<div>
+                                                                                        <a href="http://localhost:53005/Users/Detail/@item.type_of_notification_id" Class="mb-0 text-muted fw-medium" data-bs-toggle="modal" data-bs-target=".bs-example-new-task"><i Class="mdi mdi-square-edit-outline font-size-16 align-middle" onclick="editTask('task-item-1')"></i></a>
+                                                                                    </div>
+                                                                                ElseIf item.type_of_notification = 2 Then
+                                                                                    @<div>
+                                                                                        <a href="http://localhost:53005/Users/PostDetail/@item.type_of_notification_id" Class="mb-0 text-muted fw-medium" data-bs-toggle="modal" data-bs-target=".bs-example-new-task"><i Class="mdi mdi-square-edit-outline font-size-16 align-middle" onclick="editTask('task-item-1')"></i></a>
+                                                                                    </div>
+                                                                                Else
+
+                                                                                End If
+                                                                                <div>
                                                                                     <a href="http://localhost:53005/Users/DeleteNotification?id=@item.id" Class="delete-item" onclick="deleteProjects('task-item-1')">
                                                                                         <i Class="mdi mdi-trash-can-outline align-middle font-size-16 text-danger"></i>
                                                                                     </a>
@@ -290,6 +351,11 @@ End Code
     <script type="text/javascript">
         function submitForm() {
             document.getElementById("myForm").submit();
+        }
+    </script>
+    <script type="text/javascript">
+        function submitNotification() {
+            document.getElementById("myFormNotification").submit();
         }
     </script>
 </body>

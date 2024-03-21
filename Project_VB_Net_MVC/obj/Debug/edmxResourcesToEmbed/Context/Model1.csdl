@@ -80,6 +80,18 @@
     <Property Name="product_id" Type="Int32" />
     <Property Name="status" Type="Boolean" />
   </EntityType>
+  <EntityType Name="notification">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="type_of_notification" Type="Int32" Nullable="false" />
+    <Property Name="type_of_notification_id" Type="Int32" Nullable="false" />
+    <Property Name="user_id" Type="Int32" Nullable="false" />
+    <Property Name="content_notification" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <Property Name="register_time" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
   <EntityType Name="order">
     <Key>
       <PropertyRef Name="id" />
@@ -180,21 +192,22 @@
     <Property Name="image" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityContainer Name="DBNetEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="carts" EntityType="Self.cart" />
+    <EntitySet Name="cart" EntityType="Self.cart" />
     <EntitySet Name="cart_detail" EntityType="Self.cart_detail" />
-    <EntitySet Name="categories" EntityType="Self.category" />
+    <EntitySet Name="category" EntityType="Self.category" />
     <EntitySet Name="custom_order" EntityType="Self.custom_order" />
     <EntitySet Name="custom_order_notification" EntityType="Self.custom_order_notification" />
-    <EntitySet Name="deliveries" EntityType="Self.delivery" />
-    <EntitySet Name="favorites" EntityType="Self.favorite" />
-    <EntitySet Name="orders" EntityType="Self.order" />
+    <EntitySet Name="delivery" EntityType="Self.delivery" />
+    <EntitySet Name="favorite" EntityType="Self.favorite" />
+    <EntitySet Name="notification" EntityType="Self.notification" />
+    <EntitySet Name="order" EntityType="Self.order" />
     <EntitySet Name="order_detail" EntityType="Self.order_detail" />
-    <EntitySet Name="posts" EntityType="Self.post" />
+    <EntitySet Name="post" EntityType="Self.post" />
     <EntitySet Name="post_comment" EntityType="Self.post_comment" />
-    <EntitySet Name="products" EntityType="Self.product" />
+    <EntitySet Name="product" EntityType="Self.product" />
     <EntitySet Name="purchased_product" EntityType="Self.purchased_product" />
-    <EntitySet Name="rates" EntityType="Self.rate" />
-    <EntitySet Name="users" EntityType="Self.user" />
+    <EntitySet Name="rate" EntityType="Self.rate" />
+    <EntitySet Name="user" EntityType="Self.user" />
     <EntitySet Name="user_info" EntityType="Self.user_info" />
   </EntityContainer>
 </Schema>

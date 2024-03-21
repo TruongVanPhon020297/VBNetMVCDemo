@@ -12,10 +12,6 @@ End Code
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: "Lato", sans-serif;
-        }
-
         .sidebar {
             height: 100%;
             width: 200px;
@@ -44,10 +40,6 @@ End Code
         .main {
             margin-left: 200px;
             padding: 0px 10px;
-        }
-
-        body {
-            font-family: 'Calibri', sans-serif !important;
         }
 
         .card-no-border .card {

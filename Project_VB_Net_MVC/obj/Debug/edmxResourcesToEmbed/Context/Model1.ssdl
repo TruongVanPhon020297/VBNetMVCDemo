@@ -80,6 +80,18 @@
     <Property Name="product_id" Type="int" />
     <Property Name="status" Type="bit" />
   </EntityType>
+  <EntityType Name="notification">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="type_of_notification" Type="int" Nullable="false" />
+    <Property Name="type_of_notification_id" Type="int" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="content_notification" Type="nvarchar" MaxLength="4000" Nullable="false" />
+    <Property Name="status" Type="bit" Nullable="false" />
+    <Property Name="register_time" Type="datetime" Nullable="false" />
+  </EntityType>
   <EntityType Name="order">
     <Key>
       <PropertyRef Name="id" />
@@ -187,6 +199,7 @@
     <EntitySet Name="custom_order_notification" EntityType="Self.custom_order_notification" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="delivery" EntityType="Self.delivery" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="favorite" EntityType="Self.favorite" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="notification" EntityType="Self.notification" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="order_detail" EntityType="Self.order_detail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="post" EntityType="Self.post" Schema="dbo" store:Type="Tables" />

@@ -85,6 +85,18 @@
           <Property Name="product_id" Type="int" />
           <Property Name="status" Type="bit" />
         </EntityType>
+        <EntityType Name="notification">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="type_of_notification" Type="int" Nullable="false" />
+          <Property Name="type_of_notification_id" Type="int" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="content_notification" Type="nvarchar" MaxLength="4000" Nullable="false" />
+          <Property Name="status" Type="bit" Nullable="false" />
+          <Property Name="register_time" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="order">
           <Key>
             <PropertyRef Name="id" />
@@ -192,6 +204,7 @@
           <EntitySet Name="custom_order_notification" EntityType="Self.custom_order_notification" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="delivery" EntityType="Self.delivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="favorite" EntityType="Self.favorite" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="notification" EntityType="Self.notification" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="order_detail" EntityType="Self.order_detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="post" EntityType="Self.post" Schema="dbo" store:Type="Tables" />
@@ -286,6 +299,18 @@
           <Property Name="user_id" Type="Int32" />
           <Property Name="product_id" Type="Int32" />
           <Property Name="status" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="notification">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="type_of_notification" Type="Int32" Nullable="false" />
+          <Property Name="type_of_notification_id" Type="Int32" Nullable="false" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="content_notification" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
+          <Property Name="register_time" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="order">
           <Key>
@@ -387,21 +412,22 @@
           <Property Name="image" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityContainer Name="DBNetEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="carts" EntityType="Self.cart" />
+          <EntitySet Name="cart" EntityType="Self.cart" />
           <EntitySet Name="cart_detail" EntityType="Self.cart_detail" />
-          <EntitySet Name="categories" EntityType="Self.category" />
+          <EntitySet Name="category" EntityType="Self.category" />
           <EntitySet Name="custom_order" EntityType="Self.custom_order" />
           <EntitySet Name="custom_order_notification" EntityType="Self.custom_order_notification" />
-          <EntitySet Name="deliveries" EntityType="Self.delivery" />
-          <EntitySet Name="favorites" EntityType="Self.favorite" />
-          <EntitySet Name="orders" EntityType="Self.order" />
+          <EntitySet Name="delivery" EntityType="Self.delivery" />
+          <EntitySet Name="favorite" EntityType="Self.favorite" />
+          <EntitySet Name="notification" EntityType="Self.notification" />
+          <EntitySet Name="order" EntityType="Self.order" />
           <EntitySet Name="order_detail" EntityType="Self.order_detail" />
-          <EntitySet Name="posts" EntityType="Self.post" />
+          <EntitySet Name="post" EntityType="Self.post" />
           <EntitySet Name="post_comment" EntityType="Self.post_comment" />
-          <EntitySet Name="products" EntityType="Self.product" />
+          <EntitySet Name="product" EntityType="Self.product" />
           <EntitySet Name="purchased_product" EntityType="Self.purchased_product" />
-          <EntitySet Name="rates" EntityType="Self.rate" />
-          <EntitySet Name="users" EntityType="Self.user" />
+          <EntitySet Name="rate" EntityType="Self.rate" />
+          <EntitySet Name="user" EntityType="Self.user" />
           <EntitySet Name="user_info" EntityType="Self.user_info" />
         </EntityContainer>
       </Schema>
@@ -410,7 +436,7 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DBNetModelStoreContainer" CdmEntityContainer="DBNetEntities">
-          <EntitySetMapping Name="carts">
+          <EntitySetMapping Name="cart">
             <EntityTypeMapping TypeName="DBNetModel.cart">
               <MappingFragment StoreEntitySet="cart">
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -434,7 +460,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="categories">
+          <EntitySetMapping Name="category">
             <EntityTypeMapping TypeName="DBNetModel.category">
               <MappingFragment StoreEntitySet="category">
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -477,7 +503,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="deliveries">
+          <EntitySetMapping Name="delivery">
             <EntityTypeMapping TypeName="DBNetModel.delivery">
               <MappingFragment StoreEntitySet="delivery">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -487,7 +513,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="favorites">
+          <EntitySetMapping Name="favorite">
             <EntityTypeMapping TypeName="DBNetModel.favorite">
               <MappingFragment StoreEntitySet="favorite">
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -497,7 +523,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="orders">
+          <EntitySetMapping Name="notification">
+            <EntityTypeMapping TypeName="DBNetModel.notification">
+              <MappingFragment StoreEntitySet="notification">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="type_of_notification" ColumnName="type_of_notification" />
+                <ScalarProperty Name="type_of_notification_id" ColumnName="type_of_notification_id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="content_notification" ColumnName="content_notification" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="register_time" ColumnName="register_time" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="order">
             <EntityTypeMapping TypeName="DBNetModel.order">
               <MappingFragment StoreEntitySet="order">
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -524,7 +563,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="posts">
+          <EntitySetMapping Name="post">
             <EntityTypeMapping TypeName="DBNetModel.post">
               <MappingFragment StoreEntitySet="post">
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -548,7 +587,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="products">
+          <EntitySetMapping Name="product">
             <EntityTypeMapping TypeName="DBNetModel.product">
               <MappingFragment StoreEntitySet="product">
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -570,7 +609,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="rates">
+          <EntitySetMapping Name="rate">
             <EntityTypeMapping TypeName="DBNetModel.rate">
               <MappingFragment StoreEntitySet="rate">
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -582,7 +621,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="users">
+          <EntitySetMapping Name="user">
             <EntityTypeMapping TypeName="DBNetModel.user">
               <MappingFragment StoreEntitySet="user">
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -619,7 +658,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

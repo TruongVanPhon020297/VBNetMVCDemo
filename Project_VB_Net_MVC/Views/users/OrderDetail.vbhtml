@@ -10,7 +10,6 @@ End Code
     Dim delivery As delivery = Model.Item2
     Dim order As order = Model.Item3
     @<div class="container px-3 my-5 clearfix">
-        <!-- Shopping cart table -->
         <div class="card">
             <div class="card-header">
                 <h2>Order Detail</h2>
@@ -20,7 +19,6 @@ End Code
                     <table class="table table-bordered m-0">
                         <thead>
                             <tr>
-                                <!-- Set columns width -->
                                 <th class="text-center py-3 px-4" style="min-width: 400px;">Product Name &amp; Details</th>
                                 <th class="text-right py-3 px-4" style="width: 100px;">Price</th>
                                 <th class="text-center py-3 px-4" style="width: 120px;">Quantity</th>
@@ -48,7 +46,6 @@ End Code
                         </tbody>
                     </table>
                 </div>
-                <!-- / Shopping cart table -->
 
                 <div class="d-flex flex-wrap justify-content-between align-items-center pb-4">
                     <div class="d-flex">
@@ -78,11 +75,9 @@ End Code
                     @Html.ActionLink("Back to order list", "OrderInfo", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})
                 </div>
 
-
             </div>
         </div>
     </div>
-
 Else
     @<p>No order information available.</p>
     @Html.ActionLink("Back to shopping", "Product", "Users", Nothing, htmlAttributes:=New With {.class = "btn btn-lg btn-default md-btn-flat mt-2 mr-3"})

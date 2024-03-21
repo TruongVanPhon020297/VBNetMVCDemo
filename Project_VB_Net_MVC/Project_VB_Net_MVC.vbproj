@@ -194,6 +194,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Context\notification.vb">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Context\order.vb">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
