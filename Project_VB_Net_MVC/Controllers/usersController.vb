@@ -4,7 +4,7 @@ Namespace Controllers
     Public Class usersController
         Inherits System.Web.Mvc.Controller
 
-        Private db As New DBNetEntities
+        Private db As New DBNetEntitiesData
 
 
         ' Register Data 

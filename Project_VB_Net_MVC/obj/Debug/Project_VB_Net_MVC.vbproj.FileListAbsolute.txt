@@ -70,11 +70,9 @@ C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bi
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bin\Newtonsoft.Json.xml
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bin\Antlr3.Runtime.pdb
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.vbprojAssemblyReference.cache
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.Resources.resources
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.vbproj.GenerateResource.cache
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.vbproj.CoreCompileInputs.cache
-C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.vbproj.CopyComplete
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.dll
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.xml
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.pdb
@@ -82,3 +80,5 @@ C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bi
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bin\EntityFramework.SqlServer.dll
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bin\EntityFramework.xml
 C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\bin\EntityFramework.SqlServer.xml
+C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_VB_Net_MVC.vbproj.AssemblyReference.cache
+C:\Users\Fanatic Developer\source\repos\Project_VB_Net_MVC\Project_VB_Net_MVC\obj\Debug\Project_.924E2977.Up2Date

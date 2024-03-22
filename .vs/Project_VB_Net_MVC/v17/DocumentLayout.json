@@ -1,0 +1,122 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|c:\\users\\fanatic developer\\source\\repos\\project_vb_net_mvc\\project_vb_net_mvc\\controllers\\managercontroller.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|solutionrelative:project_vb_net_mvc\\controllers\\managercontroller.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|c:\\users\\fanatic developer\\source\\repos\\project_vb_net_mvc\\project_vb_net_mvc\\views\\managers\\purchaseorder.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|solutionrelative:project_vb_net_mvc\\views\\managers\\purchaseorder.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|c:\\users\\fanatic developer\\source\\repos\\project_vb_net_mvc\\project_vb_net_mvc\\controllers\\userscontroller.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|solutionrelative:project_vb_net_mvc\\controllers\\userscontroller.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|c:\\users\\fanatic developer\\source\\repos\\project_vb_net_mvc\\project_vb_net_mvc\\views\\managers\\ingredient.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|solutionrelative:project_vb_net_mvc\\views\\managers\\ingredient.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|c:\\users\\fanatic developer\\source\\repos\\project_vb_net_mvc\\project_vb_net_mvc\\views\\managers\\home.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|solutionrelative:project_vb_net_mvc\\views\\managers\\home.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|c:\\users\\fanatic developer\\source\\repos\\project_vb_net_mvc\\project_vb_net_mvc\\views\\managers\\userinfo.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{835E8888-99D5-42C6-AFBD-E56EB2E76FCF}|Project_VB_Net_MVC\\Project_VB_Net_MVC.vbproj|solutionrelative:project_vb_net_mvc\\views\\managers\\userinfo.vbhtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "usersController.vb",
+              "DocumentMoniker": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Controllers\\usersController.vb",
+              "RelativeDocumentMoniker": "Project_VB_Net_MVC\\Controllers\\usersController.vb",
+              "ToolTip": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Controllers\\usersController.vb",
+              "RelativeToolTip": "Project_VB_Net_MVC\\Controllers\\usersController.vb",
+              "ViewState": "AQIAABYHAAAAAAAAAADwvwAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-22T08:30:55.209Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Ingredient.vbhtml",
+              "DocumentMoniker": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\Ingredient.vbhtml",
+              "RelativeDocumentMoniker": "Project_VB_Net_MVC\\Views\\managers\\Ingredient.vbhtml",
+              "ToolTip": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\Ingredient.vbhtml",
+              "RelativeToolTip": "Project_VB_Net_MVC\\Views\\managers\\Ingredient.vbhtml",
+              "ViewState": "AQIAAGAAAAAAAAAAAAAAAJoAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003381|",
+              "WhenOpened": "2024-03-22T07:32:15.021Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Home.vbhtml",
+              "DocumentMoniker": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\Home.vbhtml",
+              "RelativeDocumentMoniker": "Project_VB_Net_MVC\\Views\\managers\\Home.vbhtml",
+              "ToolTip": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\Home.vbhtml",
+              "RelativeToolTip": "Project_VB_Net_MVC\\Views\\managers\\Home.vbhtml",
+              "ViewState": "AQIAAHUAAAAAAAAAAAAAAHgAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003381|",
+              "WhenOpened": "2024-03-22T07:29:58.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserInfo.vbhtml",
+              "DocumentMoniker": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\UserInfo.vbhtml",
+              "RelativeDocumentMoniker": "Project_VB_Net_MVC\\Views\\managers\\UserInfo.vbhtml",
+              "ToolTip": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\UserInfo.vbhtml",
+              "RelativeToolTip": "Project_VB_Net_MVC\\Views\\managers\\UserInfo.vbhtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003381|",
+              "WhenOpened": "2024-03-22T07:26:00.631Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PurchaseOrder.vbhtml",
+              "DocumentMoniker": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\PurchaseOrder.vbhtml",
+              "RelativeDocumentMoniker": "Project_VB_Net_MVC\\Views\\managers\\PurchaseOrder.vbhtml",
+              "ToolTip": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Views\\managers\\PurchaseOrder.vbhtml",
+              "RelativeToolTip": "Project_VB_Net_MVC\\Views\\managers\\PurchaseOrder.vbhtml",
+              "ViewState": "AQIAAEsAAAAAAAAAAAAAAF4AAABwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003381|",
+              "WhenOpened": "2024-03-22T07:25:47.981Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ManagerController.vb",
+              "DocumentMoniker": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Controllers\\ManagerController.vb",
+              "RelativeDocumentMoniker": "Project_VB_Net_MVC\\Controllers\\ManagerController.vb",
+              "ToolTip": "C:\\Users\\Fanatic Developer\\source\\repos\\Project_VB_Net_MVC\\Project_VB_Net_MVC\\Controllers\\ManagerController.vb",
+              "RelativeToolTip": "Project_VB_Net_MVC\\Controllers\\ManagerController.vb",
+              "ViewState": "AQIAAFsFAAAAAAAAAAAqwGgFAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-22T07:23:47.624Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

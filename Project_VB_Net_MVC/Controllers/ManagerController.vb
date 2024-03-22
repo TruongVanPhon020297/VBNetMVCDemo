@@ -4,7 +4,7 @@ Namespace Controllers
     Public Class ManagerController
         Inherits System.Web.Mvc.Controller
 
-        Private db As New DBNetEntities
+        Private db As New DBNetEntitiesData
 
         Enum NotificationType
             Product = 1
@@ -1274,6 +1274,215 @@ Namespace Controllers
             Return Json(data, JsonRequestBehavior.AllowGet)
 
         End Function
+
+        Function Ingredient() As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("Manager") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim ingredientCategory As List(Of ingredient_category) = Nothing
+            ingredientCategory = db.ingredient_category.ToList()
+
+            Dim ingredients As List(Of ingredient) = Nothing
+            ingredients = db.ingredient.ToList()
+
+
+            Dim tupleData As New Tuple(Of List(Of ingredient_category), List(Of ingredient))(ingredientCategory, ingredients)
+
+            Return View("~/Views/managers/Ingredient.vbhtml", tupleData)
+        End Function
+
+        <HttpPost>
+        <ValidateAntiForgeryToken()>
+        Function CreateIngredient(ingredientName As String, ingredientCategoryId As Integer)
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("Manager") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim ingredient As ingredient = New ingredient With {
+                .ingredient_category = ingredientCategoryId,
+                .ingredient_name = ingredientName,
+                .quantity = 0
+            }
+
+            db.ingredient.Add(ingredient)
+            db.SaveChanges()
+
+            Return RedirectToAction("Ingredient")
+        End Function
+
+        <HttpPost>
+        <ValidateAntiForgeryToken()>
+        Function DeleteIngredient(ingredientId As Integer)
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("Manager") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim ingredient As ingredient = db.ingredient.Find(ingredientId)
+            db.ingredient.Remove(ingredient)
+            db.SaveChanges()
+
+            Return RedirectToAction("Ingredient")
+        End Function
+
+
+
+
+        Function PurchaseOrderPage() As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("Manager") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim purchaseOrders As List(Of purchased_order) = Nothing
+
+            Dim ingredients As List(Of ingredient) = Nothing
+            ingredients = db.ingredient.ToList()
+
+
+            Dim tupleData As New Tuple(Of List(Of purchased_order), List(Of ingredient))(purchaseOrders, ingredients)
+
+            Return View("~/Views/managers/PurchaseOrder.vbhtml", tupleData)
+        End Function
+
+        <HttpPost>
+        <ValidateAntiForgeryToken()>
+        Function CreatePurchaseOrder(ingredientId As Integer, quantity As Integer) As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("Manager") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login", "users")
+            End If
+
+
+            Dim ingredient As ingredient = Nothing
+            ingredient = db.ingredient.Find(ingredientId)
+
+            Dim userCookie = Request.Cookies("Manager")
+            Dim userId = Decimal.Parse(userCookie.Value)
+
+            Dim purchasedOrder As purchased_order = Nothing
+            purchasedOrder = (From p In db.purchased_order
+                              Where p.user_id = userId And p.status = False
+                              Select p).FirstOrDefault()
+
+            If purchasedOrder Is Nothing Then
+
+                Dim purchaseOrder As purchased_order = New purchased_order With {
+                    .user_id = userId,
+                    .register_time = DateTime.Now(),
+                    .status = False,
+                    .total_price = 0,
+                    .total_quantity = quantity
+                }
+
+                db.purchased_order.Add(purchaseOrder)
+                db.SaveChanges()
+
+                Dim purchasedOrderResult As purchased_order = db.purchased_order.OrderByDescending(Function(x) x.id).FirstOrDefault()
+
+                Dim purchasedOrderDetail As purchased_order_detail = New purchased_order_detail With {
+                    .purchased_order_id = purchasedOrderResult.id,
+                    .ingredient_category_id = ingredient.ingredient_category,
+                    .ingredient_name = ingredient.ingredient_name,
+                    .price = 0,
+                    .quantity = quantity,
+                    .ingredient_id = purchasedOrderResult.id
+                }
+
+                db.purchased_order_detail.Add(purchasedOrderDetail)
+                db.SaveChanges()
+            Else
+
+                Dim purchasedOrderDetail As purchased_order_detail = Nothing
+                purchasedOrderDetail = (From p In db.purchased_order_detail
+                                        Where p.ingredient_id = ingredient.id And p.purchased_order_id = purchasedOrder.id
+                                        Select p).FirstOrDefault()
+
+                If purchasedOrderDetail IsNot Nothing Then
+
+                    purchasedOrderDetail.quantity = quantity + purchasedOrderDetail.quantity
+
+                    db.Entry(purchasedOrderDetail).State = EntityState.Modified
+                    db.SaveChanges()
+
+                Else
+
+                    Dim purchasedOrderDetailCreate As purchased_order_detail = New purchased_order_detail With {
+                        .ingredient_id = ingredient.id,
+                        .ingredient_category_id = ingredient.ingredient_category,
+                        .ingredient_name = ingredient.ingredient_name,
+                        .price = 0,
+                        .purchased_order_id = purchasedOrder.id,
+                        .quantity = quantity
+                    }
+
+                    db.purchased_order_detail.Add(purchasedOrderDetailCreate)
+                    db.SaveChanges()
+
+                End If
+            End If
+
+            Return RedirectToAction("PurchaseOrderPage")
+        End Function
+
 
     End Class
 End Namespace

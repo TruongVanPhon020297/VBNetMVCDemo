@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="DBNetModelStoreContainer" CdmEntityContainer="DBNetEntities">
+  <EntityContainerMapping StorageEntityContainer="DBNetModelStoreContainer" CdmEntityContainer="DBNetEntitiesData">
     <EntitySetMapping Name="cart">
       <EntityTypeMapping TypeName="DBNetModel.cart">
         <MappingFragment StoreEntitySet="cart">
@@ -88,6 +88,24 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="ingredient">
+      <EntityTypeMapping TypeName="DBNetModel.ingredient">
+        <MappingFragment StoreEntitySet="ingredient">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ingredient_name" ColumnName="ingredient_name" />
+          <ScalarProperty Name="ingredient_category" ColumnName="ingredient_category" />
+          <ScalarProperty Name="quantity" ColumnName="quantity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ingredient_category">
+      <EntityTypeMapping TypeName="DBNetModel.ingredient_category">
+        <MappingFragment StoreEntitySet="ingredient_category">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="notification">
       <EntityTypeMapping TypeName="DBNetModel.notification">
         <MappingFragment StoreEntitySet="notification">
@@ -162,6 +180,31 @@
           <ScalarProperty Name="description" ColumnName="description" />
           <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
           <ScalarProperty Name="category_id" ColumnName="category_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="purchased_order">
+      <EntityTypeMapping TypeName="DBNetModel.purchased_order">
+        <MappingFragment StoreEntitySet="purchased_order">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="total_price" ColumnName="total_price" />
+          <ScalarProperty Name="total_quantity" ColumnName="total_quantity" />
+          <ScalarProperty Name="register_time" ColumnName="register_time" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="status" ColumnName="status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="purchased_order_detail">
+      <EntityTypeMapping TypeName="DBNetModel.purchased_order_detail">
+        <MappingFragment StoreEntitySet="purchased_order_detail">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ingredient_name" ColumnName="ingredient_name" />
+          <ScalarProperty Name="quantity" ColumnName="quantity" />
+          <ScalarProperty Name="ingredient_category_id" ColumnName="ingredient_category_id" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="purchased_order_id" ColumnName="purchased_order_id" />
+          <ScalarProperty Name="ingredient_id" ColumnName="ingredient_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
