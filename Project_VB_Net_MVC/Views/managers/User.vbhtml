@@ -42,11 +42,10 @@ End Code
                 }
 
         .main {
-            margin-left: 200px; /* Độ rộng của sidebar */
+            margin-left: 200px;
             padding: 0px 10px;
         }
 
-        /* Đảm bảo bảng không tràn ra ngoài màn hình */
         .table-wrapper {
             max-width: 100%;
             overflow-x: auto;

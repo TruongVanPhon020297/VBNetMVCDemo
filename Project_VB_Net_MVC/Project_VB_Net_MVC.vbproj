@@ -357,6 +357,7 @@
     <Content Include="Views\users\PostDetail.vbhtml" />
     <Content Include="Views\managers\Ingredient.vbhtml" />
     <Content Include="Views\managers\PurchaseOrder.vbhtml" />
+    <Content Include="Views\managers\CreatePurchaseOrder.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

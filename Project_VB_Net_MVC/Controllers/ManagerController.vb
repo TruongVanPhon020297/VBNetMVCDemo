@@ -1483,6 +1483,42 @@ Namespace Controllers
             Return RedirectToAction("PurchaseOrderPage")
         End Function
 
+        Function CreatePurchaseOrder() As ActionResult
+
+            If Request.Cookies("Manager") Is Nothing Then
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim checkUser As Boolean = CheckUserLogin()
+
+            If Not checkUser Then
+                Dim myCookie As HttpCookie
+                myCookie = New HttpCookie("Manager") With {
+                    .Expires = DateTime.Now.AddDays(-1D)
+                }
+                Response.Cookies.Add(myCookie)
+                Return RedirectToAction("Login", "users")
+            End If
+
+            Dim userInfo = Request.Cookies("Manager")
+            Dim userId = Decimal.Parse(userInfo.Value)
+
+            Dim purchaseOrder As purchased_order = Nothing
+            purchaseOrder = (From p In db.purchased_order
+                             Where p.user_id = userId
+                             Select p).FirstOrDefault()
+
+            Dim purchaseOrderDetails As List(Of purchased_order_detail) = Nothing
+            purchaseOrderDetails = (From p In db.purchased_order_detail
+                                    Where p.purchased_order_id = purchaseOrder.id
+                                    Select p).ToList()
+
+            Dim ingredients As List(Of ingredient) = db.ingredient.ToList()
+
+            Dim tupleData As New Tuple(Of List(Of ingredient), List(Of purchased_order_detail), purchased_order)(ingredients, purchaseOrderDetails, purchaseOrder)
+
+            Return View("~/Views/managers/CreatePurchaseOrder.vbhtml", tupleData)
+        End Function
 
     End Class
 End Namespace
